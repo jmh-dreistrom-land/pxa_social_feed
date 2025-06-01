@@ -37,24 +37,10 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class FeedsController extends ActionController
 {
-    /**
-     * @var FeedRepository
-     */
-    protected $feedRepository;
-
-    /**
-     * @param FeedRepository $feedRepository
-     */
-    public function injectFeedRepository(FeedRepository $feedRepository): void
+    public function __construct(protected readonly FeedRepository $feedRepository)
     {
-        $this->feedRepository = $feedRepository;
     }
 
-    protected function initializeView($view) {}
-
-    /**
-     * List action
-     */
     public function listAction(): ResponseInterface
     {
         $limit = $this->settings['feedsLimit'] ? (int)($this->settings['feedsLimit']) : 10;
@@ -67,7 +53,6 @@ class FeedsController extends ActionController
     }
 
     /**
-     * List ajax action
      * Prepare view for later ajax request
      */
     public function listAjaxAction(): ResponseInterface
@@ -88,7 +73,7 @@ class FeedsController extends ActionController
         int $feedsLimit = 10,
         string $partial = '',
         string $presentation = ''
-    ) {
+    ): void {
         $feeds = $this->feedRepository->findByConfigurations(
             GeneralUtility::intExplode(',', $configuration, true),
             $feedsLimit

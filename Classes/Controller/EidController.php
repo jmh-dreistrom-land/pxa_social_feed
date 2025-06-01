@@ -165,12 +165,10 @@ class EidController
             ->getConnectionForTable('tx_pxasocialfeed_domain_model_token')
             ->select(
                 ['app_id', 'app_secret'],
-                'tx_pxasocialfeed_domain_model_token',
-                [
-                    'uid' => $tokenUid,
-                ]
+                'tx_pxasocialfeed_domain_model_token', 
+                ['uid' => $tokenUid]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         if (is_array($row)) {
             return $row;

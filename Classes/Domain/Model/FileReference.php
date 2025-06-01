@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Domain\Model;
 
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Core\Resource\File;
 
-/**
- * File Reference.
- */
-class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference
+class FileReference extends ExtbaseFileReference
 {
     public function setOriginalFile(File $originalFile): void
     {
         $this->uidLocal = (int)$originalFile->getUid();
     }
 
-    /**
-     * Get File UID.
-     */
     public function getFileUid(): int
     {
         return $this->uidLocal;

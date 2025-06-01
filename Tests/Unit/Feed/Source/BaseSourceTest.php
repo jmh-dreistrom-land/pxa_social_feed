@@ -28,7 +28,7 @@ class BaseSourceTest extends UnitTestCase
     /**
      * @test
      */
-    public function addFieldsAsGetParametersToUrlWithEmptyFieldsReturnSameUrl()
+    public function addFieldsAsGetParametersToUrlWithEmptyFieldsReturnSameUrl(): void
     {
         $url = 'https://site.com/api.json';
         $fields = [];
@@ -41,7 +41,7 @@ class BaseSourceTest extends UnitTestCase
     /**
      * @test
      */
-    public function addFieldsAsGetParametersToUrlWithFieldsReturnUrlWithGetParameters()
+    public function addFieldsAsGetParametersToUrlWithFieldsReturnUrlWithGetParameters(): void
     {
         $url = 'https://site.com/api.json';
         $expect = $url . '?test=1&pixelant=go';

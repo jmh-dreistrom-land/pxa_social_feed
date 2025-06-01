@@ -28,7 +28,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function valuesPassedToConstuctorSetToProperties()
+    public function valuesPassedToConstuctorSetToProperties(): void
     {
         $sender = 'sender@site.com';
         $receiver = 'receiver@site.com';
@@ -42,7 +42,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForSenderEmail()
+    public function initialValueForSenderEmail(): void
     {
         self::assertEmpty($this->subject->getSenderEmail());
     }
@@ -50,7 +50,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetSenderEmail()
+    public function canSetSenderEmail(): void
     {
         $value = 'test@site.com';
         $this->subject->setSenderEmail($value);
@@ -61,7 +61,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForReceiverEmail()
+    public function initialValueForReceiverEmail(): void
     {
         self::assertEmpty($this->subject->getReceiverEmail());
     }
@@ -69,7 +69,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetReceiverEmail()
+    public function canSetReceiverEmail(): void
     {
         $value = 'receiver@site.com';
         $this->subject->setReceiverEmail($value);
@@ -80,7 +80,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSendEmailReturnTrueOnValidSenderAndReceiver()
+    public function canSendEmailReturnTrueOnValidSenderAndReceiver(): void
     {
         $sender = 'sender@site.com';
         $receiver = 'receiver@site.com';
@@ -94,7 +94,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSendEmailReturnFalseOninValidSender()
+    public function canSendEmailReturnFalseOninValidSender(): void
     {
         $sender = 'invalid';
         $receiver = 'receiver@site.com';
@@ -108,7 +108,7 @@ class NotificationServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSendEmailReturnFalseOninValidReceiver()
+    public function canSendEmailReturnFalseOninValidReceiver(): void
     {
         $sender = 'sender@site.com';
         $receiver = 'invalidreceiver';

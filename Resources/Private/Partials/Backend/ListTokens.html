@@ -18,7 +18,7 @@
                             <td>{token.title}</td>
                             <td><f:render partial="Backend/TokenInfo/Type{token.type}" arguments="{token: token}" /></td>
                             <td>
-                                <div class="btn-group">
+                                <div class="btn-group" role="group">
                                     <f:if condition="{token.facebookPageType} == FALSE">
                                         <f:link.action action="editToken" class="btn btn-default" arguments="{tokenToEdit: token}" title="{f:translate(key: 'module.edit')}">
                                             <core:icon identifier="actions-document-open" />

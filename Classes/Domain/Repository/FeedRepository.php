@@ -44,9 +44,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class FeedRepository extends Repository
 {
-    /**
-     * @var array $defaultOrderings
-     */
     protected $defaultOrderings = [
         'postDate' => QueryInterface::ORDER_DESCENDING,
     ];
@@ -54,17 +51,17 @@ class FeedRepository extends Repository
     /**
      * Default query settings
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $defaultQuerySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
 
         // Don't respect storage
         $defaultQuerySettings->setRespectStoragePage(false);
 
-        if ( Environment::isCli() || ApplicationType::fromRequest($GLOBALS[ 'TYPO3_REQUEST' ])->isBackend() ) {
+        if ( Environment::isCli() || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() ) {
             // don't add fields from enable columns constraint
             $defaultQuerySettings->setIgnoreEnableFields(true);
-            $defaultQuerySettings->setEnableFieldsToBeIgnored([ 'disabled' ]);
+            $defaultQuerySettings->setEnableFieldsToBeIgnored(['disabled']);
         }
 
         $this->setDefaultQuerySettings($defaultQuerySettings);
@@ -77,7 +74,7 @@ class FeedRepository extends Repository
      * @param Configuration $configuration
      * @return QueryResultInterface<Feed>
      */
-    public function findNotInStorage(ObjectStorage $storage, Configuration $configuration)
+    public function findNotInStorage(ObjectStorage $storage, Configuration $configuration): QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -98,7 +95,7 @@ class FeedRepository extends Repository
      * @param int $limit
      * @return QueryResult<Feed>
      */
-    public function findByConfigurations(array $configurations, int $limit = 0)
+    public function findByConfigurations(array $configurations, int $limit = 0): QueryResultInterface
     {
         $query = $this->createQuery();
 

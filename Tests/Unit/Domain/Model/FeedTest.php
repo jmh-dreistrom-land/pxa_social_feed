@@ -56,7 +56,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfPid()
+    public function initialValueOfPid(): void
     {
         self::assertEquals(0, $this->subject->getPid());
     }
@@ -64,7 +64,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetPid()
+    public function canSetPid(): void
     {
         $value = 123;
 
@@ -75,7 +75,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfUpdateDate()
+    public function initialValueOfUpdateDate(): void
     {
         self::assertNull($this->subject->getUpdateDate());
     }
@@ -83,7 +83,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetUpdateDate()
+    public function canSetUpdateDate(): void
     {
         $date = new \DateTime();
 
@@ -95,7 +95,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfExternalIdentifier()
+    public function initialValueOfExternalIdentifier(): void
     {
         self::assertEmpty($this->subject->getExternalIdentifier());
     }
@@ -103,7 +103,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetExternalIdentifier()
+    public function canSetExternalIdentifier(): void
     {
         $value = 'test';
 
@@ -115,7 +115,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfPostDate()
+    public function initialValueOfPostDate(): void
     {
         self::assertNull($this->subject->getPostDate());
     }
@@ -123,7 +123,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetPostDate()
+    public function canSetPostDate(): void
     {
         $date = new \DateTime();
 
@@ -135,7 +135,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfPostUrl()
+    public function initialValueOfPostUrl(): void
     {
         self::assertEmpty($this->subject->getPostUrl());
     }
@@ -143,7 +143,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetPostUrl()
+    public function canSetPostUrl(): void
     {
         $value = 'post url';
 
@@ -155,7 +155,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfMessage()
+    public function initialValueOfMessage(): void
     {
         self::assertEmpty($this->subject->getMessage());
     }
@@ -163,7 +163,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetMessage()
+    public function canSetMessage(): void
     {
         $value = 'message';
 
@@ -175,7 +175,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfImage()
+    public function initialValueOfImage(): void
     {
         self::assertEmpty($this->subject->getImage());
     }
@@ -183,7 +183,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetImage()
+    public function canSetImage(): void
     {
         $value = 'image';
 
@@ -195,7 +195,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfLikes()
+    public function initialValueOfLikes(): void
     {
         self::assertEquals(0, $this->subject->getLikes());
     }
@@ -203,7 +203,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetLikes()
+    public function canSetLikes(): void
     {
         $value = 120;
 
@@ -215,7 +215,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfTitle()
+    public function initialValueOfTitle(): void
     {
         self::assertEmpty($this->subject->getTitle());
     }
@@ -223,7 +223,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetTitle()
+    public function canSetTitle(): void
     {
         $value = 'title';
 
@@ -235,7 +235,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfType()
+    public function initialValueOfType(): void
     {
         self::assertEquals(0, $this->subject->getType());
     }
@@ -243,7 +243,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetType()
+    public function canSetType(): void
     {
         $value = 3;
 
@@ -255,7 +255,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfConfiguration()
+    public function initialValueOfConfiguration(): void
     {
         self::assertNull($this->subject->getConfiguration());
     }
@@ -263,7 +263,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetConfiguration()
+    public function canSetConfiguration(): void
     {
         $fixture = new Configuration();
 
@@ -275,7 +275,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfMediaType()
+    public function initialValueOfMediaType(): void
     {
         self::assertEquals(Feed::IMAGE, $this->subject->getMediaType());
     }
@@ -283,7 +283,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetMediaType()
+    public function canSetMediaType(): void
     {
         $value = Feed::VIDEO;
 
@@ -295,7 +295,7 @@ class FeedTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDecodedMessageReturnMessage()
+    public function getDecodedMessageReturnMessage(): void
     {
         $value = 'message2';
 

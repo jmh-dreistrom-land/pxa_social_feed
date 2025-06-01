@@ -6,6 +6,7 @@ namespace Pixelant\PxaSocialFeed\Task;
 
 use Pixelant\PxaSocialFeed\Utility\SchedulerUtility;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -111,11 +112,11 @@ class ImportTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         if (!isset($submittedData['pxasocialfeed_run_all_configs'])
             && !isset($submittedData['pxasocialfeed_configs'])
         ) {
-            $this->addMessage('Wrong configurations select', AbstractMessage::ERROR);
+            $this->addMessage('Wrong configurations select', ContextualFeedbackSeverity::ERROR);
         } elseif (!$this->isValidEmail($submittedData['pxasocialfeed_sender_email'])
             || !$this->isValidEmail($submittedData['pxasocialfeed_receiver_email'])
         ) {
-            $this->addMessage('Please provide a valid email address.', AbstractMessage::ERROR);
+            $this->addMessage('Please provide a valid email address.', ContextualFeedbackSeverity::ERROR);
         } else {
             $valid = true;
         }
@@ -126,7 +127,7 @@ class ImportTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * @param array $submittedData
      * @param ImportTask $task
      */
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         $task->setConfigurations($submittedData['pxasocialfeed_configs'] ?? []);
         $task->setReceiverEmail($submittedData['pxasocialfeed_receiver_email']);

@@ -7,14 +7,8 @@ namespace Pixelant\PxaSocialFeed\Domain\Model;
 
 class FacebookPage
 {
-    /**
-     * @var string
-     */
     protected string $accessToken;
 
-    /**
-     * @var string
-     */
     protected string $category;
 
     /**
@@ -22,18 +16,12 @@ class FacebookPage
      */
     protected array $categoryList;
 
-    /**
-     * @var string
-     */
     protected string $id;
 
-    /**
-     * @var string
-     */
     protected string $name;
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected array $tasks;
 
@@ -79,7 +67,7 @@ class FacebookPage
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getTasks(): array
     {

@@ -13,8 +13,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class ParseMessageViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @var bool
      */
@@ -28,7 +26,7 @@ class ParseMessageViewHelper extends AbstractViewHelper
     /**
      * Arguments initializations
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('message', 'string', 'Feed message', false, '');
         $this->registerArgument('type', 'integer', 'Feed type', true);
@@ -40,13 +38,10 @@ class ParseMessageViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $message = $arguments['message'] ?: $renderChildrenClosure();
-        $type = $arguments['type'];
+    public function render()
+    {
+        $message = $this->arguments['message'] ?: $this->renderChildren();
+        $type = $this->arguments['type'];
 
         if (!$message) {
             return '';

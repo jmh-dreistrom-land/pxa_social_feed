@@ -6,11 +6,9 @@ namespace Pixelant\PxaSocialFeed\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class BackendUserGroupRepository
- */
 class BackendUserGroupRepository
 {
     /**
@@ -19,8 +17,9 @@ class BackendUserGroupRepository
      * @param array $exclude Uids of groups to exclude
      * @return array
      */
-    public function findAll(array $exclude = null)
+    public function findAll(array $exclude = null): array
     {
+        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('be_groups');
 
@@ -37,6 +36,6 @@ class BackendUserGroupRepository
             );
         }
 
-        return $queryBuilder->execute()->fetchAll();
+        return $queryBuilder->executeQuery()->fetchAllAssociative();
     }
 }

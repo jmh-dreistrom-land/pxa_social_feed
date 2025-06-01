@@ -13,6 +13,7 @@ return [
         'iconIdentifier'    => 'ext-pxasocialfeed-wizard-icon',
         'labels'            => 'LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf',
         'extensionName'     => 'PxaSocialFeed',
+        'stylesheet'        => 'EXT:core/Resources/Public/Css/backend.css',
         'controllerActions' => [
             AdministrationController::class => [
                 'index',

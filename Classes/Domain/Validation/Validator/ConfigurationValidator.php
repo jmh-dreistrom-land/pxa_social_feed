@@ -33,12 +33,8 @@ class ConfigurationValidator extends AbstractValidator
 {
     /**
      * Validates tokens
-     *
-     * @param Configuration $configuration
-     *
-     * @return bool
      */
-    public function isValid($configuration): void
+    public function isValid(mixed $configuration): void
     {
         // do trim
         $this->trimObjectProperties($configuration);

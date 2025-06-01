@@ -5,12 +5,13 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Domain\Model;
 
+use League\OAuth2\Client\Provider\FacebookUser as LeagueFacebookUser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class FacebookUser extends \League\OAuth2\Client\Provider\FacebookUser
+class FacebookUser extends LeagueFacebookUser
 {
     /**
-     * @var FacebookPage[]
+     * @var array<FacebookPage>
      */
     private array $pages;
 
@@ -38,7 +39,7 @@ class FacebookUser extends \League\OAuth2\Client\Provider\FacebookUser
     }
 
     /**
-     * @return FacebookPage[]
+     * @return array<FacebookPage>
      */
     public function getPages(): array
     {

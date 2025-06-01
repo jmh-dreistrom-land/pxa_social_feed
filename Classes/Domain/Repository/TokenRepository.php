@@ -26,7 +26,9 @@ namespace Pixelant\PxaSocialFeed\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -38,22 +40,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class TokenRepository extends AbstractBackendRepository
 {
-    /**
-     * @var array $defaultOrderings
-     */
     protected $defaultOrderings = [
         'crdate' => QueryInterface::ORDER_DESCENDING,
     ];
 
     /**
      * Finds a facebook page token based on the parent token (user token) and the social id.
-     *
-     * @param Token  $token
-     * @param string $fbSocialId
-     *
-     * @return QueryResultInterface<QueryResult>
      */
-    public function findFacebookPageToken(Token $token, string $fbSocialId)
+    public function findFacebookPageToken(Token $token, string $fbSocialId): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings ()->setIgnoreEnableFields ( TRUE );
@@ -89,9 +83,6 @@ class TokenRepository extends AbstractBackendRepository
         ;
     }
 
-    /**
-     * @param int $tokenUid
-     */
     public function removeAllPageTokensByParentToken(int $tokenUid): void
     {
         GeneralUtility::makeInstance(ConnectionPool::class)
@@ -102,10 +93,6 @@ class TokenRepository extends AbstractBackendRepository
         ;
     }
 
-    /**
-     * @param int    $uid
-     * @param string $accessToken
-     */
     public function updateAccessToken(int $uid, string $accessToken): void
     {
         GeneralUtility::makeInstance(ConnectionPool::class)
@@ -114,8 +101,7 @@ class TokenRepository extends AbstractBackendRepository
                 'tx_pxasocialfeed_domain_model_token',
                 ['access_token' => (string)$accessToken],
                 ['uid' => $uid],
-                [\PDO::PARAM_STR]
-            )
-        ;
+                [Connection::PARAM_STR]
+            );
     }
 }

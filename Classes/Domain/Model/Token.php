@@ -28,12 +28,14 @@ namespace Pixelant\PxaSocialFeed\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Pixelant\PxaSocialFeed\Feed\Source\FacebookSource;
 use Pixelant\PxaSocialFeed\Provider\Facebook;
 use Pixelant\PxaSocialFeed\SignalSlot\EmitSignalTrait;
+use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -43,8 +45,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class Token extends AbstractEntity
 {
-    // use EmitSignalTrait;
-
     /**
      * facebook user token
      */
@@ -76,241 +76,147 @@ class Token extends AbstractEntity
     public const TWITTER_V2 = 6;
 
     /**
-     * Default PID
-     *
-     * @var int
+     * @var ObjectStorage<BackendUserGroup>
      */
-    protected $pid = 0;
+    #[Lazy]
+    protected ObjectStorage $beGroup;
 
-    /**
-     * @var ObjectStorage<BackendUserGroup>|null
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
-     */
-    protected $beGroup;
+    protected string $name = '';
 
-    /**
-     * @var string
-     */
-    protected $name = '';
+   protected int $type = 0;
 
-    /**
-     * @var int
-     */
-    protected $type = 0;
+    protected string $appId = '';
 
-    /**
-     * @var string
-     */
-    protected $appId = '';
+    protected string $appSecret = '';
 
-    /**
-     * @var string
-     */
-    protected $appSecret = '';
+    protected string $accessToken = '';
 
-    /**
-     * @var string
-     */
-    protected $accessToken = '';
+    protected string $apiKey = '';
 
-    /**
-     * @var string
-     */
-    protected $apiKey = '';
+    protected string $apiSecretKey = '';
 
-    /**
-     * @var string
-     */
-    protected $apiSecretKey = '';
+    protected string $accessTokenSecret = '';
 
-    /**
-     * @var string
-     */
-    protected $accessTokenSecret = '';
-
-    /**
-     * @var string
-     */
-    protected $bearerToken = '';
+    protected string $bearerToken = '';
 
     /**
      * @var Facebook|null
      */
-    protected $fb;
+    protected ?Facebook $fb = null;
 
-    /**
-     * @var string
-     */
     protected string $fbSocialId = '';
 
     /**
      * @var Token
      */
-    protected $parentToken;
+    protected ?Token $parentToken = null;
 
-    /**
-     * Initialize.
-     */
+
     public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    public function initializeObject(): void
     {
         $this->beGroup = new ObjectStorage();
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
     public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return string
-     */
     public function getAppId(): string
     {
         return $this->appId;
     }
 
-    /**
-     * @param string $appId
-     */
     public function setAppId(string $appId): void
     {
         $this->appId = $appId;
     }
 
-    /**
-     * @return string
-     */
     public function getAppSecret(): string
     {
         return $this->appSecret;
     }
 
-    /**
-     * @param string $appSecret
-     */
     public function setAppSecret(string $appSecret): void
     {
         $this->appSecret = $appSecret;
     }
 
-    /**
-     * @return string
-     */
     public function getAccessToken(): string
     {
         return $this->accessToken;
     }
 
-    /**
-     * @param string $accessToken
-     */
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
     }
 
-    /**
-     * @return string
-     */
     public function getApiKey(): string
     {
         return $this->apiKey;
     }
 
-    /**
-     * @param string $apiKey
-     */
     public function setApiKey(string $apiKey): void
     {
         $this->apiKey = $apiKey;
     }
 
-    /**
-     * @return string
-     */
     public function getApiSecretKey(): string
     {
         return $this->apiSecretKey;
     }
 
-    /**
-     * @param string $apiSecretKey
-     */
     public function setApiSecretKey(string $apiSecretKey): void
     {
         $this->apiSecretKey = $apiSecretKey;
     }
 
-    /**
-     * @return string
-     */
     public function getAccessTokenSecret(): string
     {
         return $this->accessTokenSecret;
     }
 
-    /**
-     * @return string
-     */
     public function getFbSocialId(): string
     {
         return $this->fbSocialId;
     }
 
-    /**
-     * @param string $accessTokenSecret
-     */
     public function setAccessTokenSecret(string $accessTokenSecret): void
     {
         $this->accessTokenSecret = $accessTokenSecret;
     }
 
-    /**
-     * @return string
-     */
     public function getBearerToken(): string
     {
         return $this->bearerToken;
     }
 
-    /**
-     * @param string $bearerToken
-     */
     public function setBearerToken(string $bearerToken): void
     {
         $this->bearerToken = $bearerToken;
     }
 
-    /**
-     * @return ObjectStorage|null
-     */
     public function getBeGroup(): ?ObjectStorage
     {
         return $this->beGroup;
@@ -326,8 +232,6 @@ class Token extends AbstractEntity
 
     /**
      * Check if facebook token is valid
-     *
-     * @return bool
      */
     public function isValidFacebookAccessToken(): bool
     {
@@ -373,8 +277,6 @@ class Token extends AbstractEntity
 
     /**
      * Get date when facebook token expire
-     *
-     * @return \DateTime|null
      */
     public function getFacebookAccessTokenMetadataExpirationDate(): ?\DateTime
     {
@@ -391,14 +293,7 @@ class Token extends AbstractEntity
         return $expireAt;
     }
 
-    /**
-     * Facebook login url
-     *
-     * @param string $redirectUrl
-     * @param array $permissions
-     * @return string
-     */
-    public function getFacebookLoginUrl(string $clientId, string $clientSecret, string $redirectUrl, array $permissions)
+    public function getFacebookLoginUrl(string $clientId, string $clientSecret, string $redirectUrl, array $permissions): string
     {
         // required by SDK login
         session_start();
@@ -411,8 +306,6 @@ class Token extends AbstractEntity
 
     /**
      * Fetch all available pages from facebook
-     *
-     * @return array
      */
     public function getFacebookPagesIds(): array
     {
@@ -456,8 +349,6 @@ class Token extends AbstractEntity
 
     /**
      * Get value for select box.
-     *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -469,61 +360,31 @@ class Token extends AbstractEntity
         return $type;
     }
 
-    /**
-     * Check if is facebook token type
-     *
-     * @return bool
-     */
     public function isFacebookType(): bool
     {
         return $this->type === static::FACEBOOK;
     }
 
-    /**
-     * Check if is facebook page token type
-     *
-     * @return bool
-     */
     public function isFacebookPageType(): bool
     {
         return $this->type === static::FACEBOOK_PAGE;
     }
 
-    /**
-     * Check if it's of type instagram
-     *
-     * @return bool
-     */
     public function isInstagramType(): bool
     {
         return $this->type === static::INSTAGRAM;
     }
 
-    /**
-     * Check if it's of type twitter
-     *
-     * @return bool
-     */
     public function isTwitterType(): bool
     {
         return $this->type === static::TWITTER;
     }
 
-    /**
-     * Check if it's of type twitter
-     *
-     * @return bool
-     */
     public function isTwitterV2Type(): bool
     {
         return $this->type === static::TWITTER_V2;
     }
 
-    /**
-     * Check if it's of type youtube
-     *
-     * @return bool
-     */
     public function isYoutubeType(): bool
     {
         return $this->type === static::YOUTUBE;
@@ -531,8 +392,6 @@ class Token extends AbstractEntity
 
     /**
      * Get FB
-     *
-     * @return Facebook
      */
     public function getFb(string $clientId = '', string $clientSecret = '', string $redirectUri = ''): Facebook
     {
@@ -549,11 +408,6 @@ class Token extends AbstractEntity
         return $this->fb;
     }
 
-    /**
-     * Return all available types
-     *
-     * @return array
-     */
     public static function getAvailableTokensTypes(): array
     {
         return [

@@ -17,11 +17,15 @@ use Pixelant\PxaSocialFeed\Domain\Validation\Validator\TokenValidator;
 use Pixelant\PxaSocialFeed\Service\Task\ImportFeedsTaskService;
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Attribute\AsController;
+use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,106 +62,32 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * SocialFeedAdministrationController
- */
+#[AsController]
 class AdministrationController extends ActionController
 {
-    /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
-
-    /**
-     * @var TokenRepository
-     */
-    protected $tokenRepository;
-
-    /**
-     * @var FeedRepository
-     */
-    protected $feedRepository;
-
-    /**
-     * @var BackendUserGroupRepository
-     */
-    protected $backendUserGroupRepository;
-    /**
-     * Summary of moduleTemplateFactory
-     * @var ModuleTemplateFactory
-     */
-    protected ModuleTemplateFactory $moduleTemplateFactory;
-
-    /**
-     * @var ModuleTemplate
-     */
-    protected ModuleTemplate $moduleTemplate;
-
-    /**
-     * @param BackendUserGroupRepository $backendUserGroupRepository
-     */
-    public function __construct(BackendUserGroupRepository $backendUserGroupRepository, private ModuleTemplateFactory $moduleTemplateFactor, private readonly PageRenderer $pageRenderer)
+    public function __construct(
+        private readonly BackendUserGroupRepository $backendUserGroupRepository,
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private readonly PageRenderer $pageRenderer,
+        private readonly ConfigurationRepository $configurationRepository,
+        private readonly TokenRepository $tokenRepository,
+        private readonly FeedRepository $feedRepository,
+        private readonly NodeFactory $nodeFactory
+    )
     {
-        $this->backendUserGroupRepository = $backendUserGroupRepository;
-    }
-
-    public function injectModuleTemplateFactory(ModuleTemplateFactory $moduleTemplateFactory): void
-    {
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-    }
-
-    /**
-     * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
-    {
-        $this->configurationRepository = $configurationRepository;
-    }
-
-    /**
-     * @param TokenRepository $tokenRepository
-     */
-    public function injectTokenRepository(TokenRepository $tokenRepository): void
-    {
-        $this->tokenRepository = $tokenRepository;
-    }
-
-    /**
-     * @param FeedRepository $feedRepository
-     */
-    public function injectFeedRepository(FeedRepository $feedRepository): void
-    {
-        $this->feedRepository = $feedRepository;
     }
 
     protected function initializeView()
     {
-        // $this->pageRenderer->addCssFile ( 'EXT:pxa_social_feed/Resources/Public/Css/Backend/SocialFeedModule.css' );
-        // $this->pageRenderer->loadJavaScriptModule ( '@pixelant/pxa-social-feed/social-feed-administration-module.js' );
-
-        $this->pageRenderer->addRequireJsConfiguration(
-            [
-                'paths' => [
-                    'clipboard' => PathUtility::getAbsoluteWebPath(
-                        GeneralUtility::getFileAbsFileName(
-                            'EXT:pxa_social_feed/Resources/Public/JavaScript/clipboard.min'
-                        )
-                    ),
-                ],
-                'shim' => [
-                    'deps' => ['jquery'],
-                    'clipboard' => ['exports' => 'ClipboardJS'],
-                ],
-            ]
+        $this->pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
+            JavaScriptModuleInstruction::create('@pixelant/pxa-social-feed/social-feed-administration-module.js')
+            ->invoke('initialize', $this->getInlineSettings())
         );
 
-        $this->pageRenderer->loadRequireJsModule(
-            'TYPO3/CMS/PxaSocialFeed/Backend/SocialFeedModule',
-            "function(socialFeedModule) { socialFeedModule.getInstance({$this->getInlineSettings()}).run() }"
-        );
+        //$this->pageRenderer->addCssFile('EXT:pxa_social_feed/Resources/Public/Css/Backend/SocialFeedModule.css');
     }
 
-    public function initializeAction()
+    public function initializeAction(): void
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->createMenu();
@@ -165,22 +95,21 @@ class AdministrationController extends ActionController
 
     /**
      * Index action to show all configurations and tokens
-     *
-     * @param bool $activeTokenTab
      */
-    public function indexAction($activeTokenTab = false): ResponseInterface
+    public function indexAction(): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
         $tokens = $this->findAllByRepository($this->tokenRepository);
-        $this->view->assignMultiple([
+
+        $moduleTemplate->assignMultiple([
             'tokens'         => $tokens,
             'configurations' => $this->findAllByRepository($this->configurationRepository),
-            'activeTokenTab' => $activeTokenTab,
             'isTokensValid' => $this->isTokensValid($tokens),
             'isAdmin' => $GLOBALS['BE_USER']->isAdmin(),
         ]);
 
-        $this->moduleTemplate->setContent ( $this->view->render () );
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Administration/Index');
     }
 
     /**
@@ -230,7 +159,7 @@ class AdministrationController extends ActionController
             ContextualFeedbackSeverity::INFO,
         );
 
-        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed') . '&activeTokenTab=1');
+        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed'));
     }
 
     /**
@@ -249,7 +178,7 @@ class AdministrationController extends ActionController
             ContextualFeedbackSeverity::INFO,
         );
 
-        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed') . '&activeTokenTab=1');
+        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed'));
     }
 
     /**
@@ -278,7 +207,7 @@ class AdministrationController extends ActionController
                 ContextualFeedbackSeverity::INFO,
             );
 
-            return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed') . '&activeTokenTab=1');
+            return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed'));
         }
 
         $this->addFlashMessage(
@@ -290,7 +219,7 @@ class AdministrationController extends ActionController
             ContextualFeedbackSeverity::ERROR,
         );
 
-        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed') . '&activeTokenTab=1');
+        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed'));
     }
 
     /**
@@ -300,14 +229,14 @@ class AdministrationController extends ActionController
      */
     public function editConfigurationAction(Configuration $configuration = null): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
         $tokens = $this->findAllByRepository($this->tokenRepository);
 
-        $this->view->assignMultiple(compact('configuration', 'tokens'));
-        $this->assignBEGroups();
+        $moduleTemplate->assignMultiple(compact('configuration', 'tokens'));
+        $this->assignBEGroups($moduleTemplate);
 
-
-        $this->moduleTemplate->setContent ( $this->view->render () );
-        return $this->htmlResponse ( $this->moduleTemplate->renderContent () );
+        return $moduleTemplate->renderResponse('Administration/EditConfiguration');
     }
 
     /**
@@ -414,7 +343,7 @@ class AdministrationController extends ActionController
      * Assign BE groups to template
      * If admin all are available
      */
-    protected function assignBEGroups()
+    protected function assignBEGroups(ModuleTemplate $moduleTemplate)
     {
         if (!ConfigurationUtility::isFeatureEnabled('editorRestriction')) {
             return;
@@ -430,7 +359,7 @@ class AdministrationController extends ActionController
             });
         }
 
-        $this->view->assign('beGroups', $groups);
+        $moduleTemplate->assign('beGroups', $groups);
     }
 
     /**
@@ -524,9 +453,9 @@ class AdministrationController extends ActionController
      * Shortcut to redirect to index on tokens tab with flash message
      *
      * @param string|null $message
-     * @param int $severity
+     * @param ContextualFeedbackSeverity $severity
      */
-    protected function redirectToIndexTokenTab(string $message = null, int $severity = ContextualFeedbackSeverity::OK): RedirectResponse
+    protected function redirectToIndexTokenTab(string $message = null, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): RedirectResponse
     {
         if (!empty($message)) {
             $this->addFlashMessage(
@@ -536,16 +465,16 @@ class AdministrationController extends ActionController
             );
         }
 
-        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed') . '&activeTokenTab=1');
+        return new RedirectResponse($this->uriBuilder->reset()->uriFor('index', [], 'Administration', 'PxaSocialFeed'));
     }
 
     /**
      * Shortcut to redirect to index with flash message
      *
      * @param string|null $message
-     * @param int $severity
+     * @param ContextualFeedbackSeverity $severity
      */
-    protected function redirectToIndex(string $message = null, int $severity = ContextualFeedbackSeverity::OK): RedirectResponse
+    protected function redirectToIndex(string $message = null, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): RedirectResponse
     {
         if (!empty($message)) {
             $this->addFlashMessage(
@@ -569,6 +498,7 @@ class AdministrationController extends ActionController
         if (isset($configuration['excludeBackendUserGroups'])) {
             return GeneralUtility::intExplode(',', $configuration['excludeBackendUserGroups'], true);
         }
+
         return [];
     }
 }

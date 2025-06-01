@@ -31,7 +31,7 @@ class InstagramFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedSourceReturnInstagramSource()
+    public function getFeedSourceReturnInstagramSource(): void
     {
         self::assertInstanceOf(InstagramSource::class, $this->subject->getFeedSource(new Configuration()));
     }
@@ -39,7 +39,7 @@ class InstagramFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedUpdaterReturnInstagramUpdater()
+    public function getFeedUpdaterReturnInstagramUpdater(): void
     {
         self::assertInstanceOf(InstagramFeedUpdater::class, $this->subject->getFeedUpdater());
     }

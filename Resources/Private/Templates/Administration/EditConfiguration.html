@@ -1,9 +1,9 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 
-    <f:layout name="Backend/Default" />
+    <f:layout name="Module" />
 
-    <f:section name="content">
+    <f:section name="Content">
         <f:comment><!--clean all messages--></f:comment>
         <f:flashMessages as="messages" />
 
@@ -21,7 +21,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <span data-toggle="tooltip" data-placement="top" title="{f:translate(key: 'module.social_id_tooltip')}">
+                                <span title="{f:translate(key: 'module.social_id_tooltip')}">
                                     <f:translate key="module.social_id{configuration.token.type}"/>
                                 </span>
                             </td>
@@ -31,7 +31,7 @@
                                         <f:alias map="{token: configuration.token}">
                                             <f:if condition="{token.facebookType} || {token.instagramType}">
                                                 <f:then>
-                                                    <f:form.select property="socialId" options="{token.facebookPagesIds}" class="form-control" />
+                                                    <f:form.select property="socialId" options="{token.facebookPagesIds}" class="form-select" />
                                                 </f:then>
                                                 <f:else if="{token.facebookPageType}">
                                                     <f:form.textfield property="socialId" class="form-control" value="{token.fbSocialId}" readonly="true" />
@@ -58,7 +58,7 @@
                                         <f:alias map="{token: configuration.token}">
                                             <f:if condition="{token.facebookType} || {token.facebookPageType}">
                                                 <f:then>
-                                                    <f:form.select property="endPointEntry" options="{feed: 'Facebook Feed', posts: 'Facebook Posts'}" class="form-control"/>
+                                                    <f:form.select property="endPointEntry" options="{feed: 'Facebook Feed', posts: 'Facebook Posts'}" class="form-select"/>
                                                 </f:then>
                                                 <f:else>
                                                     <f:translate key="module.not_available_for_this_token" />
@@ -80,7 +80,11 @@
                         </tr>
                         <tr>
                           <td><f:translate key="module.perform_clean_up" /></td>
-                          <td><f:form.checkbox property="performCleanUp" value="1" class="form-check-input" /></td>
+                          <td>
+                              <label class="btn btn-default btn-checkbox ">
+                                  <f:form.checkbox property="performCleanUp" value="1" />
+                              </label>
+                          </td>
                         </tr>
                         <tr>
                             <td><f:translate key="module.storage"/></td>
@@ -90,24 +94,28 @@
                         </tr>
                         <tr>
                             <td><f:translate key="module.token"/></td>
-                            <td><f:form.select property="token" options="{tokens}" optionLabelField="title" class="form-control"/></td>
+                            <td><f:form.select property="token" options="{tokens}" optionLabelField="title" class="form-select"/></td>
                         </tr>
                       <tr>
                         <td><f:translate key="module.image_size"/></td>
-                        <td><f:form.select property="imageSize" options="{normal_images: 'Normal Images', small_images: 'Small Images'}" class="form-control"/></td>
+                        <td><f:form.select property="imageSize" options="{normal_images: 'Normal Images', small_images: 'Small Images'}" class="form-select"/></td>
                       </tr>
                       <tr>
                         <td><f:translate key="module.hidden"/></td>
-                        <td><f:form.checkbox property="hidden" value="1" class="form-check-input"/></td>
+                        <td>
+                            <label class="btn btn-default btn-checkbox ">
+                                <f:form.checkbox property="hidden" value="1" />
+                            </label>
+                        </td>
                       </tr>
 
-                        <f:render partial="Backend/Form/BeGroupsSelect" arguments="{beGroups: beGroups}" />
-                        <tr>
-                            <td></td>
-                            <td>
-                                <f:form.submit class="btn btn-success" name="save" value="{f:translate(key: 'module.submit')}"/>
-                            </td>
-                        </tr>
+                      <f:render partial="Backend/Form/BeGroupsSelect" arguments="{beGroups: beGroups}" />
+                      <tr>
+                          <td></td>
+                          <td>
+                              <f:form.submit class="btn btn-success" name="save" value="{f:translate(key: 'module.submit')}"/>
+                          </td>
+                      </tr>
                     </table>
                 </f:form>
 

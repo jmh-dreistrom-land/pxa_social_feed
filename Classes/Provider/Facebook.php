@@ -100,7 +100,8 @@ class Facebook extends \League\OAuth2\Client\Provider\Facebook
 
         if (is_array($response) === false) {
             throw new \UnexpectedValueException(
-                'Invalid response received from Authorization Server. Expected JSON.'
+                'Invalid response received from Authorization Server. Expected JSON.',
+                8207646814
             );
         }
 

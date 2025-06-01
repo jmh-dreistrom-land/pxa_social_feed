@@ -28,6 +28,8 @@ namespace Pixelant\PxaSocialFeed\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use Pixelant\PxaSocialFeed\Domain\Model\FileReference as PixelantFileReference;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -49,107 +51,42 @@ class Feed extends AbstractEntity
      */
     public const VIDEO = 2;
 
-    /**
-     * pid
-     *
-     * @var int
-     */
-    protected $pid = 0;
+    protected ?\DateTime $updateDate = null;
+
+    protected string $externalIdentifier = '';
+
+    protected ?\DateTime $postDate = null;
+
+    protected string $postUrl = '';
+
+    protected string $message = '';
 
     /**
-     * updateDate
-     *
-     * @var \DateTime|null
-     */
-    protected $updateDate;
-
-    /**
-     * externalIdentifier
-     *
-     * @var string
-     */
-    protected $externalIdentifier = '';
-
-    /**
-     * date
-     *
-     * @var \DateTime|null
-     */
-    protected $postDate;
-
-    /**
-     * postUrl
-     *
-     * @var string
-     */
-    protected $postUrl = '';
-
-    /**
-     * message
-     *
-     * @var string
-     */
-    protected $message = '';
-
-    /**
-     * image
-     *
      * @deprecated will be removed in a future version
-     * @var string
      */
-    protected $image = '';
+    protected string $image = '';
 
     /**
-     * small image
-     *
      * @deprecated will be removed in a future version
-     * @var string
      */
-    protected $smallImage = '';
+    protected string $smallImage = '';
+
+    protected int $likes = 0;
+
+    protected string $title = '';
+
+    protected int $type = 0;
+
+    #[Lazy]
+    protected LazyLoadingProxy|Configuration|null $configuration = null;
 
     /**
-     * likes
-     *
-     * @var int
-     */
-    protected $likes = 0;
-
-    /**
-     * title
-     *
-     * @var string
-     */
-    protected $title = '';
-
-    /**
-     * type
-     *
-     * @var int
-     */
-    protected $type = 0;
-
-    /**
-     * token
-     *
-     * @var Configuration
+     * @var ObjectStorage<PixelantFileReference>
      */
     #[Lazy]
-    protected $configuration;
+    protected ObjectStorage $falMedia;
 
-    /**
-     * Fal media items
-     *
-     * @var ObjectStorage<\Pixelant\PxaSocialFeed\Domain\Model\FileReference>
-     */
-    #[Lazy]
-    protected $falMedia;
-
-    /**
-     * media type
-     *
-     * @var int
-     */
-    protected $mediaType = self::IMAGE;
+    protected int $mediaType = self::IMAGE;
 
     public function __construct()
     {
@@ -168,57 +105,31 @@ class Feed extends AbstractEntity
         $this->falMedia = $this->falMedia ?? new ObjectStorage();
     }
 
-    /**
-     * Returns the date
-     *
-     * @return \DateTime|null $date
-     */
     public function getPostDate(): ?\DateTime
     {
         return $this->postDate;
     }
 
-    /**
-     * Sets the date
-     *
-     * @param \DateTime $postDate
-     */
-    public function setPostDate(\DateTime $postDate)
+    public function setPostDate(\DateTime $postDate): void
     {
         $this->postDate = $postDate;
     }
 
-    /**
-     * @return string
-     */
     public function getPostUrl(): string
     {
         return $this->postUrl;
     }
 
-    /**
-     * @param string $postUrl
-     */
     public function setPostUrl(string $postUrl): void
     {
         $this->postUrl = $postUrl;
     }
 
-    /**
-     * Returns the message
-     *
-     * @return string $message
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * Returns the message decoded
-     *
-     * @return string $message
-     */
     public function getDecodedMessage(): string
     {
         return json_decode(
@@ -229,21 +140,13 @@ class Feed extends AbstractEntity
         );
     }
 
-    /**
-     * Sets the message
-     *
-     * @param string $message
-     */
     public function setMessage(string $message): void
     {
         $this->message = $message;
     }
 
     /**
-     * Returns the image
-     *
      * @deprecated will be removed in a future version
-     * @return string $image
      */
     public function getImage(): string
     {
@@ -251,10 +154,7 @@ class Feed extends AbstractEntity
     }
 
     /**
-     * Sets the image
-     *
      * @deprecated will be removed in a future version
-     * @param string $image
      */
     public function setImage(string $image): void
     {
@@ -262,10 +162,7 @@ class Feed extends AbstractEntity
     }
 
     /**
-     * Returns small image
-     *
      * @deprecated will be removed in a future version
-     * @return string $smallImage
      */
     public function getSmallImage(): string
     {
@@ -273,41 +170,23 @@ class Feed extends AbstractEntity
     }
 
     /**
-     * Sets the image
-     *
      * @deprecated will be removed in a future version
-     * @param string $smallImage
      */
     public function setSmallImage(string $smallImage): void
     {
         $this->smallImage = $smallImage;
     }
 
-    /**
-     * Returns the title
-     *
-     * @return string $title
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Sets the title
-     *
-     * @param string $title
-     */
     public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * Returns the config
-     *
-     * @return Configuration $configuration
-     */
     public function getConfiguration(): ?Configuration
     {
         if ($this->configuration instanceof LazyLoadingProxy) {
@@ -317,104 +196,63 @@ class Feed extends AbstractEntity
         return $this->configuration;
     }
 
-    /**
-     * Sets the token
-     *
-     * @param Configuration $configuration
-     */
-    public function setConfiguration(?Configuration $configuration)
+    public function setConfiguration(?Configuration $configuration): void
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * @return string
-     */
     public function getExternalIdentifier(): string
     {
         return $this->externalIdentifier;
     }
 
-    /**
-     * @param string $externalIdentifier
-     */
-    public function setExternalIdentifier(string $externalIdentifier)
+    public function setExternalIdentifier(string $externalIdentifier): void
     {
         $this->externalIdentifier = $externalIdentifier;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getUpdateDate(): ?\DateTime
     {
         return $this->updateDate;
     }
 
-    /**
-     * @param \DateTime $updateDate
-     */
-    public function setUpdateDate(\DateTime $updateDate)
+    public function setUpdateDate(\DateTime $updateDate): void
     {
         $this->updateDate = $updateDate;
     }
 
-    /**
-     * @return int
-     */
     public function getLikes(): int
     {
         return $this->likes;
     }
 
-    /**
-     * @param int $likes
-     */
-    public function setLikes(int $likes)
+    public function setLikes(int $likes): void
     {
         $this->likes = $likes;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType(int $type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * Returns the mediaType
-     *
-     * @return int $mediaType
-     */
     public function getMediaType(): int
     {
         return $this->mediaType;
     }
 
-    /**
-     * Sets the mediaType
-     *
-     * @param int $mediaType
-     */
-    public function setMediaType(int $mediaType)
+    public function setMediaType(int $mediaType): void
     {
         $this->mediaType = $mediaType;
     }
 
     /**
-     * Get the Fal media items
-     *
-     * @return ObjectStorage<\Pixelant\PxaSocialFeed\Domain\Model\FileReference>|null
+     * @return ObjectStorage<PixelantFileReference>|null
      */
     public function getFalMedia(): ?ObjectStorage
     {
@@ -432,9 +270,7 @@ class Feed extends AbstractEntity
     }
 
     /**
-     * Set Fal media relation
-     *
-     * @param ObjectStorage<\Pixelant\PxaSocialFeed\Domain\Model\FileReference> $falMedia
+     * @param ObjectStorage<PixelantFileReference> $falMedia
      */
     public function setFalMedia(ObjectStorage $falMedia): void
     {

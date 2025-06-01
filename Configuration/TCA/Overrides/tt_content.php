@@ -2,7 +2,7 @@
 
 defined('TYPO3') || die('Access denied.');
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+$pluginKey = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'pxa_social_feed',
     'Showfeed',
     'Pxa Social Feed'
@@ -15,6 +15,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['pxasocialfee
 
 // Add flexform
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'pxasocialfeed_showfeed',
-    'FILE:EXT:pxa_social_feed/Configuration/FlexForm/SocialFeed.xml'
+    $pluginKey,
+    'FILE:EXT:pxa_social_feed/Configuration/FlexForm/SocialFeed.xml',
 );

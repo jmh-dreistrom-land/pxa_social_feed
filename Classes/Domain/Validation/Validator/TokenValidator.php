@@ -34,10 +34,8 @@ class TokenValidator extends AbstractValidator
 {
     /**
      * Validates tokens
-     *
-     * @param Token $token
      */
-    protected function isValid($token): void
+    protected function isValid(mixed $token): void
     {
         if (!in_array($token->getType(), Token::getAvailableTokensTypes())) {
             $this->addError(

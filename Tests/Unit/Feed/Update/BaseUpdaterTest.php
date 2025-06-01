@@ -39,7 +39,7 @@ class BaseUpdaterTest extends UnitTestCase
     /**
      * @test
      */
-    public function addOrUpdateFeedItemSaveItemInFeedsStorage()
+    public function addOrUpdateFeedItemSaveItemInFeedsStorage(): void
     {
         $feed = new Feed();
         $feedStorage = new ObjectStorage();
@@ -55,7 +55,7 @@ class BaseUpdaterTest extends UnitTestCase
     /**
      * @test
      */
-    public function addOrUpdateFeedItemCallAddOnNewItem()
+    public function addOrUpdateFeedItemCallAddOnNewItem(): void
     {
         $feed = new Feed();
         $mockedRepository = $this->createMock(FeedRepository::class);
@@ -73,7 +73,7 @@ class BaseUpdaterTest extends UnitTestCase
     /**
      * @test
      */
-    public function addOrUpdateFeedItemCallUpdateOnExistingItem()
+    public function addOrUpdateFeedItemCallUpdateOnExistingItem(): void
     {
         $feed = new Feed();
         $feed->_setProperty('uid', 1);
@@ -93,7 +93,7 @@ class BaseUpdaterTest extends UnitTestCase
     /**
      * @test
      */
-    public function encodeMessageForSimpleStringReturnSameString()
+    public function encodeMessageForSimpleStringReturnSameString(): void
     {
         $value = 'test string';
 

@@ -52,7 +52,7 @@ class SchedulerUtility
                 'tx_pxasocialfeed_domain_model_configuration'
             );
 
-        while ($config = $statement->fetch()) {
+        while ($config = $statement->fetchAssociative()) {
             $selectedAttribute = '';
             if (is_array($selectedConfigurations) && in_array($config['uid'], $selectedConfigurations)) {
                 $selectedAttribute = ' selected="selected"';

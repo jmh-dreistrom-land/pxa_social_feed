@@ -104,7 +104,7 @@ class PageLayoutView
         $template = GeneralUtility::getFileAbsFileName($this->templatePath);
 
         $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename($template);
+        $view->getRenderingContext()->getTemplatePaths()->setTemplatePathAndFilename($template);
 
         return $view;
     }
