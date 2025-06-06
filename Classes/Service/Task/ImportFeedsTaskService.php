@@ -19,51 +19,23 @@ use Pixelant\PxaSocialFeed\Feed\YoutubeFactory;
 use Pixelant\PxaSocialFeed\Service\Expire\FacebookAccessTokenExpireService;
 use Pixelant\PxaSocialFeed\Service\Notification\NotificationService;
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/**
- * Class ImportFeedsTaskService
- */
+#[Autoconfigure(public: true)]
 class ImportFeedsTaskService
 {
-    /**
-     * feeds repository
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
+    protected ConfigurationRepository $configurationRepository;
+    protected PersistenceManager $persistenceManager;
 
-    /**
-     * @var NotificationService
-     */
-    protected $notificationService;
-
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * TaskUtility constructor.
-     * @param NotificationService $notificationService
-     */
-    public function __construct(NotificationService $notificationService = null)
+    public function __construct(protected readonly NotificationService $notificationService)
     {
-        $this->notificationService = $notificationService ?? GeneralUtility::makeInstance(NotificationService::class);
-
         $this->configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
     }
 
-    /**
-     * Import logic
-     *
-     * @param array $configurationUids
-     * @param bool $runAllConfigurations
-     * @return bool
-     */
     public function import(array $configurationUids, bool $runAllConfigurations = false): bool
     {
         /** @var Configuration[] $configurations */
@@ -109,9 +81,6 @@ class ImportFeedsTaskService
 
     /**
      * Update feed configuration
-     *
-     * @param FeedFactoryInterface $feedFactory
-     * @param Configuration $configuration
      */
     protected function importFeed(FeedFactoryInterface $feedFactory, Configuration $configuration): void
     {
@@ -132,9 +101,6 @@ class ImportFeedsTaskService
         $updater->persist();
     }
 
-    /**
-     * @param Token $token
-     */
     protected function getFactory(Token $token): FeedFactoryInterface
     {
         switch (true) {
@@ -170,8 +136,6 @@ class ImportFeedsTaskService
 
     /**
      * Check if facebook token expire, send notification if yes
-     *
-     * @param Token $token
      */
     protected function checkFacebookAccessToken(Token $token): void
     {
@@ -200,9 +164,6 @@ class ImportFeedsTaskService
 
     /**
      * Disable a configuration, if feature enabled
-     *
-     * @param Configuration $configuration
-     * @param int $httpErrorCode
      */
     protected function disableConfiguration(Configuration $configuration, int $httpErrorCode): void
     {

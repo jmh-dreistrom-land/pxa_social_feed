@@ -31,40 +31,16 @@ use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/**
- * The repository for Feeds
- */
 class TokenRepository extends AbstractBackendRepository
 {
+    /**
+     * @var array $defaultOrderings
+     */
     protected $defaultOrderings = [
         'crdate' => QueryInterface::ORDER_DESCENDING,
     ];
-
-    /**
-     * Finds a facebook page token based on the parent token (user token) and the social id.
-     */
-    public function findFacebookPageToken(Token $token, string $fbSocialId): QueryResultInterface
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings ()->setIgnoreEnableFields ( TRUE );
-        //TODO: handle Facebook Social ID and parent token
-        // $query->equals('parentToken', $token->getParentToken()),
-        // $query->equals('fbSocialId', $fbSocialId),
-        $query->matching(
-            $query->logicalAnd(
-                $query->equals ( 'parentToken', 0 ),
-                $query->equals ( 'fbSocialId', '' ),
-            )
-        );
-
-        $query->setLimit(1);
-
-        return $query->execute();
-    }
 
     /**
      * @param array<string, int|string> $pageToken

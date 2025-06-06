@@ -19,9 +19,6 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
- * This model represents a backend usergroup.
- */
 class BackendUserGroup extends AbstractEntity
 {
     public const FILE_OPPERATIONS             = 1;
@@ -237,7 +234,7 @@ class BackendUserGroup extends AbstractEntity
     }
 
     /**
-     * Set the the bit for file operations are allowed.
+     * Set the bit for file operations are allowed.
      */
     public function setFileOperationAllowed(bool $value): void
     {
@@ -253,7 +250,7 @@ class BackendUserGroup extends AbstractEntity
     }
 
     /**
-     * Set the the bit for directory operations are allowed.
+     * Set the bit for directory operations are allowed.
      */
     public function setDirectoryOperationAllowed(bool $value): void
     {
@@ -269,7 +266,7 @@ class BackendUserGroup extends AbstractEntity
     }
 
     /**
-     * Set the the bit for copy directories.
+     * Set the bit for copy directories.
      */
     public function setDirectoryCopyAllowed(bool $value): void
     {
@@ -285,7 +282,7 @@ class BackendUserGroup extends AbstractEntity
     }
 
     /**
-     * Set the the bit for remove directories recursively.
+     * Set the bit for remove directories recursively.
      */
     public function setDirectoryRemoveRecursivelyAllowed(bool $value): void
     {

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Exception;
 
-/**
- * Class FacebookObtainAccessTokenException
- */
 class FacebookObtainAccessTokenException extends \Exception
 {
     protected int $statusCode = 0;

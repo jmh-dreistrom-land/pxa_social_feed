@@ -1,7 +1,4 @@
-import DocumentService from '@typo3/core/document-service.js';
-import Notification from '@typo3/backend/notification.js';
 import Modal from '@typo3/backend/modal.js';
-import $ from 'jquery';
 import Severity from '@typo3/backend/severity.js';
 import { MessageUtility } from '@typo3/backend/utility/message-utility.js';
 
@@ -35,27 +32,35 @@ class SocialFeedAdministrationModule {
    * @private
    */
   deleteConfirmation() {
-    const confirmationButton = this.getDomElementByIdentifier('confirmationButton');
+    const confirmationButtons = this.getDomElementByIdentifier('confirmationButton', true);
 
-    if (confirmationButton) {
-      confirmationButton.addEventListener('click', function (e) {
+    for (const button of confirmationButtons) {
+      button.addEventListener('click', function (e) {
         e.preventDefault();
 
-        const sender = e.target;
+        const sender = e.currentTarget;
 
-        const title = sender.data('confirmation-title') || 'Delete';
-        const message = sender.data('confirmation-message') || 'Are you sure you want to delete this record ?';
-        const url = sender.attr('href');
-        const modal = Modal.confirm(title, message, Severity.warning);
+        const title = sender.dataset.confirmationTitle ?? 'Delete';
+        const message = sender.dataset.confirmationMessage ?? 'Are you sure you want to delete this record ?';
+        const url = sender.getAttribute('href');
 
-        modal.on('confirm.button.cancel', function () {
-          Modal.dismiss(modal);
-        });
-
-        modal.on('confirm.button.ok', function () {
-          Modal.dismiss(modal);
-          window.location.href = url;
-        });
+        Modal.confirm(title, message, Severity.warning, [
+          {
+            text: TYPO3.lang['cancel'] || 'Cancel',
+            active: true,
+            trigger: function() {
+              Modal.dismiss();
+            }
+          },
+          {
+            text: TYPO3.lang['yes'] || 'Yes',
+            btnClass: 'btn btn-warning',
+            trigger: function() {
+              window.location.href = url;
+              Modal.dismiss();
+            }
+          }
+        ]);
       });
     }
   }
@@ -66,20 +71,20 @@ class SocialFeedAdministrationModule {
    * @private
    */
   facebookLoginWindow() {
-    const facebookLoginButton = this.getDomElementByIdentifier('facebookLoginButton');
+    const facebookLoginButtons = this.getDomElementByIdentifier('facebookLoginButton', true);
 
-    if (facebookLoginButton) {
-      facebookLoginButton.addEventListener('click', function (e) {
+    for (const button of facebookLoginButtons) {
+      button.addEventListener('click', function (e) {
         e.preventDefault();
 
-        var sender = e.target;
+        var sender = e.currentTarget;
         var w = 800;
         var h = 800;
 
         var y = window.top.outerHeight / 2 + window.top.screenY - h / 2;
         var x = window.top.outerWidth / 2 + window.top.screenX - w / 2;
 
-        window.open(sender.attr('href'), 'Facebook login', 'height=' + h + ',width=' + w + 'top=' + y + ', left=' + x);
+        window.open(sender.getAttribute('href'), 'Facebook login', 'height=' + h + ',width=' + w + 'top=' + y + ', left=' + x);
       });
     }
   }
@@ -90,13 +95,15 @@ class SocialFeedAdministrationModule {
    * @private
    */
   changeSocialType() {
-    /*
-    this.getDomElementByIdentifier('selectSocialType').on('change', function () {
-      var selectSocialType = $(this).find(':selected').val();
+    const socialTypeElement = this.getDomElementByIdentifier('selectSocialType');
 
-      window.location.href = $(getDomElementByIdentifier('socialTypeUrlKeep') + selectSocialType).val();
-    });
-     */
+    if (socialTypeElement) {
+      socialTypeElement.addEventListener('change', function (event) {
+        const selectSocialType = event.target.options[event.target.selectedIndex].value;
+
+        window.location.href = document.querySelector(this.getElementSelectorByIdentifier('socialTypeUrlKeep') + selectSocialType).value;
+      }.bind(this));
+    }
   }
 
   /**
@@ -104,7 +111,9 @@ class SocialFeedAdministrationModule {
    * @private
    */
   getRedirectUriButtonClick() {
-    //new clipboard(this.getDomElementByIdentifier('copyRedirectUriButton'));
+    try {
+      new ClipboardJS(this.getElementSelectorByIdentifier('copyRedirectUriButton'));
+    } catch (error) {}
   }
 
   /**
@@ -128,12 +137,13 @@ class SocialFeedAdministrationModule {
 
       const fieldElement = this.getInsertTarget(e.data.fieldName);
       if (fieldElement) {
-        fieldElement.value = e.data.value;
+        const pageId = e.data.value.match(/[^\d]*(\d+)/);
+        fieldElement.value = pageId[1] ?? '';
       }
 
       const storageTitleElement = this.getDomElementByIdentifier('feedsStorageTitle');
       if (storageTitleElement) {
-        storageTitleElement.innerHTML = e.data.label;
+        storageTitleElement.innerText = e.data.label;
       }
     }.bind(this));
 
@@ -170,13 +180,22 @@ class SocialFeedAdministrationModule {
   }
 
   /**
-   * Get selector
+   * Get Element by Selector
    * @param elementIdentifier
+   * @param all
    * @return {string|null}
    * @private
    */
-  getDomElementByIdentifier(elementIdentifier) {
-    return document.querySelector(this.domElementsSelectors[elementIdentifier]);
+  getDomElementByIdentifier(elementIdentifier, all=false) {
+    if (all) {
+      return document.querySelectorAll(this.getElementSelectorByIdentifier(elementIdentifier));
+    }
+
+    return document.querySelector(this.getElementSelectorByIdentifier(elementIdentifier));
+  }
+
+  getElementSelectorByIdentifier(elementIdentifier) {
+    return this.domElementsSelectors[elementIdentifier];
   }
 
   /**

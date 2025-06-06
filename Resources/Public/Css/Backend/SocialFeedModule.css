@@ -10,6 +10,8 @@
 }
 
 .bg-notification {
+    background-color: var(--typo3-input-bg);
+    color: var(--typo3-input-color);
     padding: 15px;
 }
 

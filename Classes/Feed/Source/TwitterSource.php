@@ -7,13 +7,8 @@ namespace Pixelant\PxaSocialFeed\Feed\Source;
 use Pixelant\PxaSocialFeed\Event\BeforeReturnTwitterQueryFieldsEvent;
 use Pixelant\PxaSocialFeed\Exception\BadResponseException;
 use Pixelant\PxaSocialFeed\Exception\InvalidFeedSourceData;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class TwitterSource
- */
 class TwitterSource extends BaseSource
 {
     /**
@@ -109,8 +104,7 @@ class TwitterSource extends BaseSource
             'include_rts'     => '1',
         ];
 
-        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-        $event           = $eventDispatcher->dispatch(new BeforeReturnTwitterQueryFieldsEvent($fields));
+        $event = $this->eventDispatcher->dispatch(new BeforeReturnTwitterQueryFieldsEvent($fields));
 
         return $event->getFields();
     }

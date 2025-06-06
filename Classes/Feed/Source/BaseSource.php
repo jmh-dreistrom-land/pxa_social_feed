@@ -6,33 +6,22 @@ namespace Pixelant\PxaSocialFeed\Feed\Source;
 
 use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
 use Pixelant\PxaSocialFeed\Exception\BadResponseException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class BaseSource
- */
 abstract class BaseSource implements FeedSourceInterface
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected readonly EventDispatcherInterface $eventDispatcher;
+    protected readonly RequestFactory $requestFactory;
 
-    /**
-     * @param Configuration $configuration
-     */
-    public function __construct(Configuration $configuration)
+    public function __construct(protected readonly Configuration $configuration)
     {
-        $this->configuration = $configuration;
+        $this->eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
     }
 
-    /**
-     * Get configuration
-     *
-     * @return Configuration
-     */
     public function getConfiguration(): Configuration
     {
         return $this->configuration;

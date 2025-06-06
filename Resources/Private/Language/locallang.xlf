@@ -215,6 +215,9 @@
             <trans-unit id="validator.error.all_fields_require">
                 <source>All fields are required</source>
             </trans-unit>
+            <trans-unit id="validator.error.field_is_required">
+                <source>Field "%s" is required.</source>
+            </trans-unit>
 
             <trans-unit id="error.import_error">
                 <source>Social feed import error</source>

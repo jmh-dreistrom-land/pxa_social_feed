@@ -43,7 +43,7 @@ class SchedulerUtility
      */
     public static function getAvailableConfigurationsSelectBox(array $selectedConfigurations): string
     {
-        $selector = '<select class="form-control" name="tx_scheduler[pxasocialfeed_configs][]" multiple>';
+        $selector = '<select class="form-select" name="tx_scheduler[pxasocialfeed_configs][]" multiple>';
 
         $statement = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_pxasocialfeed_domain_model_configuration')
@@ -54,7 +54,7 @@ class SchedulerUtility
 
         while ($config = $statement->fetchAssociative()) {
             $selectedAttribute = '';
-            if (is_array($selectedConfigurations) && in_array($config['uid'], $selectedConfigurations)) {
+            if (in_array($config['uid'], $selectedConfigurations)) {
                 $selectedAttribute = ' selected="selected"';
             }
 

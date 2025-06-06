@@ -1,13 +1,10 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 
-    <f:layout name="Backend/Default"/>
+    <f:layout name="Module" />
 
-    <f:section name="content">
-        <f:comment>Empty flash messages</f:comment>
-        <f:flashMessages as="messages" />
-
-        <f:render partial="Backend/ValidationErrors" arguments="{for: 'token'}" />
+    <f:section name="Content">
+        <f:flashMessages queueIdentifier="pxa-social-feed" />
 
         <h4>
             <f:translate key="module.token_action" />
@@ -48,7 +45,7 @@
             </table>
         </f:form>
 
-        <f:link.action class="btn btn-default" action="index" arguments="{activeTokenTab: 1}">
+        <f:link.action class="btn btn-default" action="index">
             <f:translate key="module.go_back" />
         </f:link.action>
     </f:section>

@@ -26,6 +26,7 @@ namespace Pixelant\PxaSocialFeed\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use Pixelant\PxaSocialFeed\Database\Query\Restriction\BackendGroupRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
@@ -33,14 +34,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/**
- * Class AbstractRepository
- */
 abstract class AbstractBackendRepository extends Repository
 {
-    /**
-     * Initialize default settings
-     */
     public function initializeObject(): void
     {
         /** @var Typo3QuerySettings $defaultQuerySettings */
@@ -54,10 +49,17 @@ abstract class AbstractBackendRepository extends Repository
         $this->setDefaultQuerySettings($defaultQuerySettings);
     }
 
+    public function add($object): void
+    {
+        if ($object->getPid() === null) {
+            $object->setPid(0);
+        }
+
+        parent::add($object);
+    }
+
     /**
      * Find all records with backend user group restriction
-     *
-     * @return QueryResultInterface
      */
     public function findAllBackendGroupRestriction(): QueryResultInterface
     {

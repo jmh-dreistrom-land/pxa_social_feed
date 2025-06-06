@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pixelant\PxaSocialFeed\Task;
 
 use Pixelant\PxaSocialFeed\Utility\SchedulerUtility;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -36,30 +35,32 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 class ImportTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 {
     use AdditionalFieldProviderTrait;
+
     /**
      * @param array $taskInfo
      * @param ImportTask $task
-     * @param SchedulerModuleController $parentObject
+     * @param SchedulerModuleController $schedulerModule
      * @return array
      */
     public function getAdditionalFields(
         array &$taskInfo,
         $task,
-        SchedulerModuleController $parentObject
+        SchedulerModuleController $schedulerModule
     ): array {
         $additionalFields = [];
 
-        if ($this->getAction($parentObject) == 'add') {
+        if ($this->getAction($schedulerModule) == 'add') {
             $taskInfo['pxasocialfeed_configs'] = null;
             $taskInfo['pxasocialfeed_receiver_email'] = '';
             $taskInfo['pxasocialfeed_sender_email'] = '';
             $taskInfo['pxasocialfeed_run_all_configs'] = false;
         }
 
-        if ($this->getAction($parentObject) == 'edit') {
+        if ($this->getAction($schedulerModule) == 'edit') {
             $taskInfo['pxasocialfeed_configs'] = $task->getConfigurations();
             $taskInfo['pxasocialfeed_receiver_email'] = $task->getReceiverEmail();
             $taskInfo['pxasocialfeed_sender_email'] = $task->getSenderEmail();
@@ -67,8 +68,8 @@ class ImportTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         }
 
         $additionalFields['pxasocialfeed_run_all_configs'] = [
-            'code' => '<input type="checkbox" name="tx_scheduler[pxasocialfeed_run_all_configs]" '
-                . ($taskInfo['pxasocialfeed_run_all_configs'] ? 'checked="checked"' : '') . ' />',
+            'code' => '<div class="form-check form-switch"><input type="checkbox" name="tx_scheduler[pxasocialfeed_run_all_configs]" class="form-check-input" '
+                . ($taskInfo['pxasocialfeed_run_all_configs'] ? 'checked="checked"' : '') . ' /></div>',
             'label' => 'LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf:scheduler.run_all_configs',
             'cshKey' => '',
             'cshLabel' => '',
@@ -97,14 +98,10 @@ class ImportTaskAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 
         return $additionalFields;
     }
-    /**
-     * @param array $submittedData
-     * @param SchedulerModuleController $parentObject
-     * @return bool
-     */
+
     public function validateAdditionalFields(
         array &$submittedData,
-        SchedulerModuleController $parentObject
+        SchedulerModuleController $schedulerModule
     ): bool {
         // nothing to validate, just list of uids
         $valid = false;

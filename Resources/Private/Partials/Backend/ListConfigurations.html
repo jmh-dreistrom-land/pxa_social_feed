@@ -24,7 +24,16 @@
                                 </span>
                             </td>
                             <td>{configuration.name}</td>
-                            <td>{configuration.socialId}</td>
+                            <td>
+                                <f:if condition="{configuration.token.type} == 5">
+                                    <f:then>
+                                        {configuration.token.fbSocialId}
+                                    </f:then>
+                                    <f:else>
+                                        {configuration.socialId}
+                                    </f:else>
+                                </f:if>
+                            </td>
                             <td>{configuration.maxItems}</td>
                             <td>{configuration.storageTitle} (#{configuration.storage})</td>
                             <td>{configuration.token.title} (#{configuration.token.uid})</td>
@@ -48,7 +57,7 @@
                                     <f:link.action action="editConfiguration" class="btn btn-default" arguments="{configuration: configuration}" title="{f:translate(key: 'module.edit')}">
                                         <core:icon identifier="actions-document-open" />
                                     </f:link.action>
-                                    <f:link.action action="deleteConfiguration" class="btn btn-default" arguments="{configuration: configuration}" title="{f:translate(key: 'module.delete')}">
+                                    <f:link.action action="deleteConfiguration" class="btn btn-default confirmation-action" arguments="{configuration: configuration}" title="{f:translate(key: 'module.delete')}">
                                         <core:icon identifier="actions-edit-delete" />
                                     </f:link.action>
                                 </div>
