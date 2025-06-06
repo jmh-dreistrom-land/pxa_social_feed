@@ -15,19 +15,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendGroupRestriction implements QueryRestrictionInterface
 {
-    /**
-     * @var string
-     */
-    protected $groupFieldName = 'be_group';
+    protected string $groupFieldName = 'be_group';
 
-    /**
-     * @var BackendUserAuthentication|null
-     */
-    protected $backendUserAuth;
+    protected ?BackendUserAuthentication $backendUserAuth;
 
-    /**
-     * Initialize
-     */
     public function __construct()
     {
         if (isset($GLOBALS['BE_USER'])) {
@@ -41,6 +32,7 @@ class BackendGroupRestriction implements QueryRestrictionInterface
     public function buildExpression(array $queriedTables, ExpressionBuilder $expressionBuilder): CompositeExpression
     {
         $constraints = [];
+
         if ($this->backendUserAuth !== null && !$this->backendUserAuth->isAdmin()) {
             foreach ($queriedTables as $tableAlias => $tableName) {
                 $fieldName = $tableAlias . '.' . $this->groupFieldName;

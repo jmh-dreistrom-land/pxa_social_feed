@@ -31,7 +31,7 @@ class TwitterFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedSourceReturnTwitterSource()
+    public function getFeedSourceReturnTwitterSource(): void
     {
         self::assertInstanceOf(TwitterSource::class, $this->subject->getFeedSource(new Configuration()));
     }
@@ -39,7 +39,7 @@ class TwitterFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedUpdaterReturnTwitterUpdater()
+    public function getFeedUpdaterReturnTwitterUpdater(): void
     {
         self::assertInstanceOf(TwitterFeedUpdater::class, $this->subject->getFeedUpdater());
     }

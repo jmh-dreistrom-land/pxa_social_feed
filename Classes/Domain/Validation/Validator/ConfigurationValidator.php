@@ -35,10 +35,8 @@ class ConfigurationValidator extends AbstractValidator
      * Validates tokens
      *
      * @param Configuration $configuration
-     *
-     * @return bool
      */
-    public function isValid($configuration): void
+    public function isValid(mixed $configuration): void
     {
         // do trim
         $this->trimObjectProperties($configuration);
@@ -58,6 +56,9 @@ class ConfigurationValidator extends AbstractValidator
         }
 
         if (isset($errorCode)) {
+            $errorMessage = $this->translateErrorMessage('validator.error.' . $errorCode, 'PxaSocialFeed');
+            $this->addErrorToMessageQueue($errorMessage);
+
             $this->addError(
                 $this->translateErrorMessage('validator.error.' . $errorCode, 'PxaSocialFeed'),
                 $errorCode

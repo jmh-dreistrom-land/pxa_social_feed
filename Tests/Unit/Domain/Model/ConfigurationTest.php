@@ -56,7 +56,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfPid()
+    public function initialValueOfPid(): void
     {
         self::assertEquals(0, $this->subject->getPid());
     }
@@ -64,7 +64,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetPid()
+    public function canSetPid(): void
     {
         $value = 123;
 
@@ -75,7 +75,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfHidden()
+    public function initialValueOfHidden(): void
     {
         self::assertFalse($this->subject->isHidden());
     }
@@ -83,7 +83,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetHidden()
+    public function canSetHidden(): void
     {
         $value = true;
 
@@ -94,7 +94,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfName()
+    public function initialValueOfName(): void
     {
         self::assertEquals('', $this->subject->getName());
     }
@@ -102,7 +102,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetName()
+    public function canSetName(): void
     {
         $value = 'name';
 
@@ -114,7 +114,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfSocialId()
+    public function initialValueOfSocialId(): void
     {
         self::assertEquals('', $this->subject->getSocialId());
     }
@@ -122,7 +122,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetSocialId()
+    public function canSetSocialId(): void
     {
         $value = 'social id';
 
@@ -134,7 +134,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfMaxItems()
+    public function initialValueOfMaxItems(): void
     {
         self::assertEquals(0, $this->subject->getMaxItems());
     }
@@ -142,7 +142,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetMaxItems()
+    public function canSetMaxItems(): void
     {
         $value = 1000;
 
@@ -154,7 +154,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfStorage()
+    public function initialValueOfStorage(): void
     {
         self::assertEquals(0, $this->subject->getStorage());
     }
@@ -162,7 +162,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetStorage()
+    public function canSetStorage(): void
     {
         $value = 12;
 
@@ -174,7 +174,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueOfToken()
+    public function initialValueOfToken(): void
     {
         self::assertNull($this->subject->getToken());
     }
@@ -182,7 +182,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetToken()
+    public function canSetToken(): void
     {
         $token = new Token();
 
@@ -194,7 +194,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function initValueOfBeGroup()
+    public function initValueOfBeGroup(): void
     {
         self::assertInstanceOf(ObjectStorage::class, $this->subject->getBeGroup());
     }
@@ -202,7 +202,7 @@ class ConfigurationTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetBeGroup()
+    public function canSetBeGroup(): void
     {
         $beGroup = new ObjectStorage();
 

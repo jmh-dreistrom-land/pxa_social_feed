@@ -56,7 +56,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForTypeForPid()
+    public function initialValueForTypeForPid(): void
     {
         self::assertEquals(0, $this->subject->getPid());
     }
@@ -64,7 +64,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetPid()
+    public function canSetPid(): void
     {
         $pid = 12;
 
@@ -76,7 +76,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForType()
+    public function initialValueForType(): void
     {
         self::assertEquals(0, $this->subject->getType());
     }
@@ -84,7 +84,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetType()
+    public function canSetType(): void
     {
         $value = Token::INSTAGRAM;
 
@@ -96,7 +96,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForAppId()
+    public function initialValueForAppId(): void
     {
         self::assertEquals('', $this->subject->getAppId());
     }
@@ -104,7 +104,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetAppId()
+    public function canSetAppId(): void
     {
         $value = 'appId';
 
@@ -116,7 +116,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForAppSecret()
+    public function initialValueForAppSecret(): void
     {
         self::assertEquals('', $this->subject->getAppSecret());
     }
@@ -124,7 +124,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetAppSecret()
+    public function canSetAppSecret(): void
     {
         $value = 'appSecret';
 
@@ -136,7 +136,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForAccessToken()
+    public function initialValueForAccessToken(): void
     {
         self::assertEquals('', $this->subject->getAccessToken());
     }
@@ -144,7 +144,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetAccessToken()
+    public function canSetAccessToken(): void
     {
         $value = 'AccessToken';
 
@@ -156,7 +156,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForApiKey()
+    public function initialValueForApiKey(): void
     {
         self::assertEquals('', $this->subject->getApiKey());
     }
@@ -164,7 +164,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetApiKey()
+    public function canSetApiKey(): void
     {
         $value = 'apiKey';
 
@@ -176,7 +176,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForApiSecretKey()
+    public function initialValueForApiSecretKey(): void
     {
         self::assertEquals('', $this->subject->getApiSecretKey());
     }
@@ -184,7 +184,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetApiSecretKey()
+    public function canSetApiSecretKey(): void
     {
         $value = 'apiSecretKey';
 
@@ -196,7 +196,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForAccessTokenSecret()
+    public function initialValueForAccessTokenSecret(): void
     {
         self::assertEquals('', $this->subject->getAccessTokenSecret());
     }
@@ -204,7 +204,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetAccessTokenSecret()
+    public function canSetAccessTokenSecret(): void
     {
         $value = 'AccessTokenSecret';
 
@@ -216,7 +216,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function isValidFacebookAccessTokenReturnFalseIfAccessTokenEmpty()
+    public function isValidFacebookAccessTokenReturnFalseIfAccessTokenEmpty(): void
     {
         $this->subject->setAccessToken('');
 
@@ -226,7 +226,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFacebookAccessTokenValidPeriodReturnDifferenceInDays()
+    public function getFacebookAccessTokenValidPeriodReturnDifferenceInDays(): void
     {
         $expect = '+7';
         $endDate = (new \DateTime())->modify('+7 days');
@@ -243,7 +243,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function isFacebookTypeReturnTrueIfOfTypeFacebook()
+    public function isFacebookTypeReturnTrueIfOfTypeFacebook(): void
     {
         $this->subject->setType(Token::FACEBOOK);
 
@@ -253,7 +253,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function isInstagramTypeReturnTrueIfOfTypeInstagram()
+    public function isInstagramTypeReturnTrueIfOfTypeInstagram(): void
     {
         $this->subject->setType(Token::INSTAGRAM);
 
@@ -263,7 +263,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function isTwitterTypeReturnTrueIfOfTypeTwitter()
+    public function isTwitterTypeReturnTrueIfOfTypeTwitter(): void
     {
         $this->subject->setType(Token::TWITTER);
 
@@ -273,7 +273,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function isYoutubeTypeReturnTrueIfOfTypeYoutube()
+    public function isYoutubeTypeReturnTrueIfOfTypeYoutube(): void
     {
         $this->subject->setType(Token::YOUTUBE);
 
@@ -283,7 +283,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initialValueForName()
+    public function initialValueForName(): void
     {
         self::assertEquals('', $this->subject->getName());
     }
@@ -291,7 +291,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetName()
+    public function canSetName(): void
     {
         $name = 'test';
 
@@ -303,7 +303,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function initValueOfBeGroup()
+    public function initValueOfBeGroup(): void
     {
         self::assertInstanceOf(ObjectStorage::class, $this->subject->getBeGroup());
     }
@@ -311,7 +311,7 @@ class TokenTest extends UnitTestCase
     /**
      * @test
      */
-    public function canSetBeGroup()
+    public function canSetBeGroup(): void
     {
         $beGroup = new ObjectStorage();
 

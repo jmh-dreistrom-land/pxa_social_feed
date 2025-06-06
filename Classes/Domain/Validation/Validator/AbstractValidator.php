@@ -28,33 +28,29 @@ namespace Pixelant\PxaSocialFeed\Domain\Validation\Validator;
  ***************************************************************/
 
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator as ExtbaseAbstractValidator;
 
-abstract class AbstractValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+abstract class AbstractValidator extends ExtbaseAbstractValidator
 {
-    /**
-     * @param AbstractEntity $object
-     */
-    protected function trimObjectProperties($object)
+    protected function trimObjectProperties(AbstractEntity $object): void
     {
-        if (is_object($object) && $object instanceof AbstractEntity) {
-            $gettableProperties = ObjectAccess::getGettableProperties($object);
+        $gettableProperties = ObjectAccess::getGettableProperties($object);
 
-            foreach ($gettableProperties as $property => $value) {
-                if (is_string($value) && ObjectAccess::isPropertySettable($object, $property)) {
-                    ObjectAccess::setProperty($object, $property, trim($value));
-                }
+        foreach ($gettableProperties as $property => $value) {
+            if (is_string($value) && ObjectAccess::isPropertySettable($object, $property)) {
+                ObjectAccess::setProperty($object, $property, trim($value));
             }
         }
     }
 
-    /**
-     * @param $value
-     * @return bool
-     */
-    protected function isEmptyValue($value)
+    protected function isEmptyValue($value): bool
     {
         if ($value instanceof ObjectStorage) {
             return $value->count() === 0;
@@ -65,11 +61,23 @@ abstract class AbstractValidator extends \TYPO3\CMS\Extbase\Validation\Validator
 
     /**
      * Check if BE groups field is required
-     * @return bool
      */
-    protected function isBeGroupRequired()
+    protected function isBeGroupRequired(): bool
     {
         return ConfigurationUtility::isFeatureEnabled('editorRestriction')
             && ConfigurationUtility::isFeatureEnabled('editorRestrictionIsRequired');
+    }
+
+    protected function addErrorToMessageQueue(string $errorMessage): void
+    {
+        $flashMessage = GeneralUtility::makeInstance(
+            FlashMessage::class,
+            $errorMessage,
+            '',
+            ContextualFeedbackSeverity::ERROR,
+            true);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $messageQueue = $flashMessageService->getMessageQueueByIdentifier('pxa-social-feed');
+        $messageQueue->enqueue($flashMessage);
     }
 }

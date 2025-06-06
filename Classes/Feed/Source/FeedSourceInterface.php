@@ -6,9 +6,6 @@ namespace Pixelant\PxaSocialFeed\Feed\Source;
 
 use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
 
-/**
- * Class FeedSourceInterface
- */
 interface FeedSourceInterface
 {
     /**

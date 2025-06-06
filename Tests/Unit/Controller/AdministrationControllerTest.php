@@ -37,7 +37,7 @@ class AdministrationControllerTest extends UnitTestCase
     /**
      * @test
      */
-    public function findAllByRepositoryUseFindAllIfRestrictionIsDisable()
+    public function findAllByRepositoryUseFindAllIfRestrictionIsDisable(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pxa_social_feed'] = [
             'editorRestriction' => false,
@@ -55,7 +55,7 @@ class AdministrationControllerTest extends UnitTestCase
     /**
      * @test
      */
-    public function findAllByRepositoryUseFindAllWithRestricitonIfRestrictionIsEnabled()
+    public function findAllByRepositoryUseFindAllWithRestricitonIfRestrictionIsEnabled(): void
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pxa_social_feed'] = [
             'editorRestriction' => true,

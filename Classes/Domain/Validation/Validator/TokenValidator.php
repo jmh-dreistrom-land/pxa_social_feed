@@ -35,9 +35,9 @@ class TokenValidator extends AbstractValidator
     /**
      * Validates tokens
      *
-     * @param Token $token
+     * @param Token $configuration
      */
-    protected function isValid($token): void
+    protected function isValid(mixed $token): void
     {
         if (!in_array($token->getType(), Token::getAvailableTokensTypes())) {
             $this->addError(
@@ -73,11 +73,12 @@ class TokenValidator extends AbstractValidator
             $value = ObjectAccess::getProperty($token, $property);
 
             if ($this->isEmptyValue($value)) {
+                $errorMessage = $this->translateErrorMessage('validator.error.field_is_required', 'PxaSocialFeed');
+                $errorMessage = sprintf($errorMessage, $property);
+                $this->addErrorToMessageQueue($errorMessage);
+
                 $this->addError(
-                    $this->translateErrorMessage(
-                        'validator.error.all_fields_require',
-                        'PxaSocialFeed'
-                    ),
+                    $this->translateErrorMessage('validator.error.all_fields_require', 'PxaSocialFeed'),
                     1221559976
                 );
             }

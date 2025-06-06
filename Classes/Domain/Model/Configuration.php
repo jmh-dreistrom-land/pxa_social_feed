@@ -28,103 +28,61 @@ namespace Pixelant\PxaSocialFeed\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
- * Configuration
- */
 class Configuration extends AbstractEntity
 {
-    /**
-     * Default PID
-     *
-     * @var int
-     */
-    protected $pid = 0;
+    protected bool $hidden = false;
 
-    /**
-     * hidden
-     *
-     * @var bool
-     */
-    protected $hidden = false;
+    protected bool $performCleanUp = true;
 
-    /**
-     * clear
-     *
-     * @var bool
-     */
-    protected $performCleanUp = true;
+    protected string $name = '';
 
-    /**
-     * name
-     *
-     * @var string
-     */
-    protected $name = '';
+    protected string $imageSize = 'normal_images';
 
-    /**
-     * image size
-     *
-     * @var string
-     */
-    protected $imageSize = 'normal_images';
+    protected string $socialId = '';
 
-    /**
-     * @var string
-     */
-    protected $socialId = '';
+    protected string $endPointEntry = '';
 
-    /**
-     * @var string
-     */
-    protected $endPointEntry = '';
+    protected int $maxItems = 0;
 
-    /**
-     * @var int
-     */
-    protected $maxItems = 0;
-
-    /**
-     * @var int
-     */
-    protected $storage = 0;
+    protected int $storage = 0;
 
     /**
      * @var Token
      */
     #[Lazy]
-    protected $token;
+    protected LazyLoadingProxy|Token|null $token = null;
 
     /**
      * @var ObjectStorage<BackendUserGroup>
      */
     #[Lazy]
-    protected $beGroup;
+    protected ObjectStorage $beGroup;
 
     /**
      * Initialize
      */
     public function __construct()
     {
+        $this->initializeObject();
+    }
+
+    public function initializeObject(): void
+    {
         $this->beGroup = new ObjectStorage();
     }
 
-    /**
-     * @return bool
-     */
     public function isHidden(): bool
     {
         return $this->hidden;
     }
 
-    /**
-     * @param bool $hidden
-     */
     public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
@@ -146,9 +104,6 @@ class Configuration extends AbstractEntity
         $this->beGroup = $beGroup;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -159,41 +114,26 @@ class Configuration extends AbstractEntity
         return $this->imageSize;
     }
 
-    /**
-     * @return string
-     */
     public function getSocialId(): string
     {
         return $this->socialId;
     }
 
-    /**
-     * @param string $socialId
-     */
     public function setSocialId(string $socialId): void
     {
         $this->socialId = $socialId;
     }
 
-    /**
-     * @return string
-     */
     public function getEndPointEntry(): string
     {
         return $this->endPointEntry;
     }
 
-    /**
-     * @param string $endPointEntry
-     */
     public function setEndPointEntry(string $endPointEntry): void
     {
         $this->endPointEntry = $endPointEntry;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -204,41 +144,26 @@ class Configuration extends AbstractEntity
         $this->imageSize = $imageSize;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxItems(): int
     {
         return $this->maxItems;
     }
 
-    /**
-     * @param int $maxItems
-     */
     public function setMaxItems(?int $maxItems): void
     {
         $this->maxItems = $maxItems ?? 0;
     }
 
-    /**
-     * @return int
-     */
     public function getStorage(): int
     {
         return $this->storage;
     }
 
-    /**
-     * @param int $storage
-     */
     public function setStorage(?int $storage): void
     {
         $this->storage = $storage ?? 0;
     }
 
-    /**
-     * @return Token
-     */
     public function getToken(): ?Token
     {
         if ($this->token instanceof LazyLoadingProxy) {
@@ -247,20 +172,12 @@ class Configuration extends AbstractEntity
         return $this->token;
     }
 
-    /**
-     * @param Token $token
-     */
     public function setToken(Token $token): void
     {
         $this->token = $token;
     }
 
-    /**
-     * Get title of storage
-     *
-     * @return string
-     */
-    public function getStorageTitle()
+    public function getStorageTitle(): string
     {
         $raw = BackendUtility::getRecord(
             'pages',
@@ -271,17 +188,11 @@ class Configuration extends AbstractEntity
         return is_array($raw) ? $raw['title'] : '';
     }
 
-    /**
-     * @param bool $performCleanUp
-     */
     public function setPerformCleanUp(bool $performCleanUp): void
     {
         $this->performCleanUp = $performCleanUp;
     }
 
-    /**
-    * @return bool
-    */
     public function getPerformCleanUp(): bool
     {
         return $this->performCleanUp;

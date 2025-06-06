@@ -2,16 +2,34 @@
 
 defined('TYPO3') or die();
 
+use Pixelant\PxaSocialFeed\Controller\FeedsController;
+use Pixelant\PxaSocialFeed\Controller\EidController;
+use Pixelant\PxaSocialFeed\Task\ImportTask;
+use Pixelant\PxaSocialFeed\Task\ImportTaskAdditionalFieldProvider;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+
 (function () {
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    ExtensionUtility::configurePlugin(
         'PxaSocialFeed',
         'Showfeed',
         [
-            \Pixelant\PxaSocialFeed\Controller\FeedsController::class => 'list, loadFeedAjax, listAjax',
+            FeedsController::class => 'list, listAjax',
         ],
         // non-cacheable actions
         [
-            \Pixelant\PxaSocialFeed\Controller\FeedsController::class => 'list, loadFeedAjax',
+            FeedsController::class => 'list',
+        ]
+    );
+
+    ExtensionUtility::configurePlugin(
+        'PxaSocialFeed',
+        'LoadFeedAjax',
+        [
+            FeedsController::class => 'loadFeedAjax',
+        ],
+        // non-cacheable actions
+        [
+            FeedsController::class => 'loadFeedAjax',
         ]
     );
 
@@ -19,24 +37,14 @@ defined('TYPO3') or die();
 
     // @codingStandardsIgnoreStart
     // Import task
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Pixelant\PxaSocialFeed\Task\ImportTask::class] = [
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][ImportTask::class] = [
         'extension'        => 'pxa_social_feed',
         'title' => $ll . 'task.import.name',
         'description' => $ll . 'task.import.description',
-        'additionalFields' => \Pixelant\PxaSocialFeed\Task\ImportTaskAdditionalFieldProvider::class,
+        'additionalFields' => ImportTaskAdditionalFieldProvider::class,
     ];
 
-    // hook for extension BE view
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['pxasocialfeed_showfeed']['pxa_social_feed'] =
-        \Pixelant\PxaSocialFeed\Hooks\PageLayoutView::class . '->getExtensionInformation';
-    // @codingStandardsIgnoreEnd
-
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        "@import 'EXT:pxa_social_feed/Configuration/TSconfig/ContentElementWizard.tsconfig'"
-    );
-
     // Register eID to obtain access token
-    $eID = \Pixelant\PxaSocialFeed\Controller\EidController::IDENTIFIER;
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include'][$eID] =
-        \Pixelant\PxaSocialFeed\Controller\EidController::class . '::addFbAccessTokenAction';
+    $eID = EidController::IDENTIFIER;
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include'][$eID] = EidController::class . '::addFbAccessTokenAction';
 })();

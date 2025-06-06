@@ -4,7 +4,9 @@ namespace Pixelant\PxaSocialFeed\Controller;
 
 use Pixelant\PxaSocialFeed\Domain\Repository\FeedRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /***************************************************************
@@ -32,42 +34,31 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * FeedsController
- */
 class FeedsController extends ActionController
 {
-    /**
-     * @var FeedRepository
-     */
-    protected $feedRepository;
-
-    /**
-     * @param FeedRepository $feedRepository
-     */
-    public function injectFeedRepository(FeedRepository $feedRepository): void
+    public function __construct(protected readonly FeedRepository $feedRepository)
     {
-        $this->feedRepository = $feedRepository;
     }
 
-    protected function initializeView($view) {}
-
-    /**
-     * List action
-     */
     public function listAction(): ResponseInterface
     {
+        if (($this->settings['loadType'] ?? 'standard') == 'ajax') {
+            return (new ForwardResponse('listAjax'))
+                ->withControllerName('Feeds')
+                ->withExtensionName('pxa_social_feed');
+        }
+
         $limit = $this->settings['feedsLimit'] ? (int)($this->settings['feedsLimit']) : 10;
         $configurations = GeneralUtility::intExplode(',', $this->settings['configuration'], true);
 
         $feeds = $this->feedRepository->findByConfigurations($configurations, $limit);
 
         $this->view->assign('feeds', $feeds);
+
         return $this->htmlResponse();
     }
 
     /**
-     * List ajax action
      * Prepare view for later ajax request
      */
     public function listAjaxAction(): ResponseInterface
@@ -77,38 +68,30 @@ class FeedsController extends ActionController
 
     /**
      * Load feed with ajax
-     *
-     * @param string $configuration
-     * @param int $feedsLimit
-     * @param string $partial
-     * @param string $presentation
      */
-    public function loadFeedAjaxAction(
-        string $configuration,
-        int $feedsLimit = 10,
-        string $partial = '',
-        string $presentation = ''
-    ) {
+    public function loadFeedAjaxAction(): JsonResponse {
+        $params = $this->request->getQueryParams();
+
+        $feedsLimit = ($params['feedsLimit'] ?? false) ? $params['feedsLimit'] : 10;
+
         $feeds = $this->feedRepository->findByConfigurations(
-            GeneralUtility::intExplode(',', $configuration, true),
+            GeneralUtility::intExplode(',', $params['configuration'], true),
             $feedsLimit
         );
-        $settings = array_merge(
-            $this->settings,
-            compact('configuration', 'feedsLimit', 'partial', 'presentation')
-        );
+
+        $settings = $this->settings;
+        $settings['configuration'] = $params['configuration'];
+        $settings['feedsLimit'] = $feedsLimit;
+        $settings['partial'] = ($params['partial'] ?? '') == 'FeedItemDynamic' ? 'FeedItemDynamic' : 'FeedItemCard';
+        $settings['presentation'] = ($params['presentation'] ?? '') == 'owl-carousel' ? 'owl-carousel' : 'masonry';
 
         $this->view->assignMultiple(compact('feeds', 'settings'));
 
-        header('Content-Type: application/json');
-
-        echo json_encode(
+        return new JsonResponse(
             [
                 'success' => true,
                 'html' => $this->view->render(),
             ]
         );
-
-        exit(0);
     }
 }

@@ -7,22 +7,14 @@ namespace Pixelant\PxaSocialFeed\Feed\Source;
 use Pixelant\PxaSocialFeed\Event\BeforeReturnTwitterQueryFieldsEvent;
 use Pixelant\PxaSocialFeed\Exception\BadResponseException;
 use Pixelant\PxaSocialFeed\Exception\InvalidFeedSourceData;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class TwitterSource
- */
 class TwitterV2Source extends BaseSource
 {
     /**
      * Twitter api
      */
     public const API_URL = 'https://api.twitter.com/2/';
-
-    public function __construct(
-        private readonly EventDispatcherInterface $eventDispatcher,
-    ) {}
 
     /**
      * Load feed source
@@ -123,7 +115,9 @@ class TwitterV2Source extends BaseSource
             'exclude' => 'replies',
         ];
 
-        [ $fields ] = $this->eventDispatcher->dispatch(new BeforeReturnTwitterQueryFieldsEvent($fields));
+        $event = new BeforeReturnTwitterQueryFieldsEvent($fields);
+        $this->eventDispatcher->dispatch($event);
+        $fields = $event->getFields();
 
         return $fields;
     }

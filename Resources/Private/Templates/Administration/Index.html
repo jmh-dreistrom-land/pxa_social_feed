@@ -1,36 +1,49 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers">
 
-    <f:layout name="Backend/Default" />
+    <f:layout name="Module" />
 
-    <f:section name="content">
-        <f:flashMessages />
+    <f:section name="Content">
+        <f:asset.module identifier="bootstrap"/>
+        <f:asset.module identifier="@typo3/backend/tabs.js"/>
+        <f:asset.script identifier="clipboard.min.js" src="EXT:pxa_social_feed/Resources/Public/JavaScript/Backend/clipboard.min.js" defer="true" />
+        <f:asset.css href="EXT:pxa_social_feed/Resources/Public/Css/Backend/SocialFeedModule.css" identifier="SocialFeedModule" />
 
-        <div id="tokens-confs">
-            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                <li>
-                    <a id="configurations-tab" class="tab-switch{f:if(condition: activeTokenTab, else: ' active')}" href="#configurations" role="tab" aria-controls="configurations" aria-selected="true"><f:translate key="module.configurations"/></a>
+        <f:comment>Empty flash messages from extBase</f:comment>
+        <f:flashMessages as="messages" />
+        <f:flashMessages queueIdentifier="pxa-social-feed" />
+
+        <div id="tokens-confs" role="tabpanel">
+            <ul id="token-configuration-tabs" class="nav nav-tabs form-section-tabs t3js-tabs" role="tablist" data-store-last-tab="1">
+                <li class="nav-item t3js-tabmenu-item" role="presentation">
+                    <button id="configurations-tab" type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#configurations" aria-controls="configurations" aria-selected="true" role="tab">
+                        <f:translate key="module.configurations"/>
+                    </button>
                 </li>
-                <li>
-                    <a id="tokens-tab" class="tab-switch{f:if(condition: isTokensValid, then:'', else: 'has-validation-error ')}{f:if(condition: activeTokenTab, then: ' active')}" href="#tokens" data-toggle="tab" role="tab" aria-controls="tokens" aria-selected="false"><f:translate key="module.tokens"/></a>
+                <li class="nav-item t3js-tabmenu-item" role="presentation">
+                    <button id="tokens-tab" type="button" class="nav-link{f:if(condition: isTokensValid, then:'', else: ' has-validation-error ')}" data-bs-toggle="tab" data-bs-target="#tokens" aria-controls="tokens" aria-selected="false" role="tab">
+                        <f:translate key="module.tokens"/>
+                    </button>
                 </li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane{f:if(condition: activeTokenTab, else: ' show active')}" id="configurations" role="tabpanel" aria-labelledby="configurations-tab">
-                    <br>
-                    <f:render partial="Backend/ListConfigurations" section="list" arguments="{configurations: configurations, isAdmin: isAdmin}"/>
-                    <f:link.action class="btn btn-default" action="editConfiguration">
-                        <f:translate key="module.add_new"/>
-                    </f:link.action>
+                <div id="configurations" class="tab-pane active" role="tabpanel" aria-labelledby="configurations-tab">
+                    <div class="form-section">
+                        <f:render partial="Backend/ListConfigurations" section="list" arguments="{configurations: configurations, isAdmin: isAdmin}"/>
+                        <f:link.action class="btn btn-default" action="editConfiguration">
+                            <f:translate key="module.add_new"/>
+                        </f:link.action>
+                    </div>
                 </div>
 
-                <div class="tab-pane{f:if(condition: activeTokenTab, then: ' show active')}" id="tokens"  role="tabpanel" aria-labelledby="tokens-tab">
-                    <br>
-                    <f:render partial="Backend/ListTokens" section="list" arguments="{tokens: tokens}"/>
-                    <f:link.action class="btn btn-default" action="editToken">
-                        <f:translate key="module.add_new"/>
-                    </f:link.action>
+                <div id="tokens" class="tab-pane" role="tabpanel" aria-labelledby="tokens-tab">
+                    <div class="form-section">
+                        <f:render partial="Backend/ListTokens" section="list" arguments="{tokens: tokens}"/>
+                        <f:link.action class="btn btn-default" action="editToken">
+                            <f:translate key="module.add_new"/>
+                        </f:link.action>
+                    </div>
                 </div>
             </div>
         </div>

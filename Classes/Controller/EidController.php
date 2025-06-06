@@ -12,25 +12,18 @@ use Pixelant\PxaSocialFeed\Feed\Source\FacebookSource;
 use Pixelant\PxaSocialFeed\Provider\Facebook;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class EidController
- */
+#[Autoconfigure(public: true)]
 class EidController
 {
     public const IDENTIFIER = 'pxa_social_feed_fb_access_token';
 
-    /**
-     * @var TokenRepository
-     */
-    private $tokenRepository;
-
-    public function __construct()
+    public function __construct(private readonly TokenRepository $tokenRepository)
     {
-        $this->tokenRepository = GeneralUtility::makeInstance(TokenRepository::class);
     }
 
     /**
@@ -47,6 +40,7 @@ class EidController
         if ($request->getQueryParams()['token']) {
             return $this->processRequest($request, $response);
         }
+
         return $response->withStatus(400, 'Bad request');
     }
 
@@ -166,11 +160,9 @@ class EidController
             ->select(
                 ['app_id', 'app_secret'],
                 'tx_pxasocialfeed_domain_model_token',
-                [
-                    'uid' => $tokenUid,
-                ]
+                ['uid' => $tokenUid]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         if (is_array($row)) {
             return $row;
@@ -233,24 +225,12 @@ class EidController
         return $accessToken;
     }
 
-    /**
-     * Redirect url
-     *
-     * @param int $tokenUid
-     * @return string
-     */
     protected function buildRedirectUrl(int $tokenUid): string
     {
-        $protocol = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO']
-            === 'https' ? 'https' : 'http';
-
         return sprintf(
-            '%s://%s%s/?eID=%s&token=%d',
-            $protocol,
-            GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'),
-            GeneralUtility::getIndpEnv('TYPO3_PORT') ? (':' . GeneralUtility::getIndpEnv('TYPO3_PORT')) : '',
-            self::IDENTIFIER,
+            '%s?eID=%s&token=%d',
+            GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
+            EidController::IDENTIFIER,
             $tokenUid
         );
     }

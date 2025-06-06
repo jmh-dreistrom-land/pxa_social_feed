@@ -35,15 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
- * Class TokenGenerationUrlViewHelper
- */
 class FacebookLoginUrlViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * @var bool
      */
@@ -64,7 +58,7 @@ class FacebookLoginUrlViewHelper extends AbstractViewHelper
     /**
      * Initialize
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('token', Token::class, 'Token', true);
         $this->registerArgument('loginUrlAs', 'string', 'Render as', true);
@@ -78,17 +72,13 @@ class FacebookLoginUrlViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return mixed
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
+    public function render()
+    {
         /** @var Token $token */
-        $token = $arguments['token'];
-        $loginUrlAs = $arguments['loginUrlAs'];
-        $redirectUrlAs = $arguments['redirectUrlAs'];
-        $permissions = GeneralUtility::trimExplode(',', $arguments['permissions']);
-
+        $token = $this->arguments['token'];
+        $loginUrlAs = $this->arguments['loginUrlAs'];
+        $redirectUrlAs = $this->arguments['redirectUrlAs'];
+        $permissions = GeneralUtility::trimExplode(',', $this->arguments['permissions']);
         $redirectUrl = static::buildRedirectUrl($token->getUid());
 
         try {
@@ -97,10 +87,8 @@ class FacebookLoginUrlViewHelper extends AbstractViewHelper
             return $exception->getMessage();
         }
 
-        $variableProvider = $renderingContext->getVariableProvider();
-
+        $variableProvider = $this->renderingContext->getVariableProvider();
         static::removeVariables($variableProvider, $loginUrlAs, $redirectUrlAs);
-
         $variableProvider->add($redirectUrlAs, $redirectUrl);
 
         if (str_contains($url, 'redirect_uri=&')) {
@@ -114,8 +102,7 @@ class FacebookLoginUrlViewHelper extends AbstractViewHelper
         }
 
         $variableProvider->add($loginUrlAs, $url);
-        $content = $renderChildrenClosure();
-
+        $content = $this->renderChildren();
         static::removeVariables($variableProvider, $loginUrlAs, $redirectUrlAs);
 
         return $content;
@@ -136,23 +123,11 @@ class FacebookLoginUrlViewHelper extends AbstractViewHelper
         }
     }
 
-    /**
-     * Redirect url
-     *
-     * @param int $tokenUid
-     * @return string
-     */
     protected static function buildRedirectUrl(int $tokenUid): string
     {
-        $protocol = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO']
-            === 'https' ? 'https' : 'http';
-
         return sprintf(
-            '%s://%s%s/?eID=%s&token=%d',
-            $protocol,
-            GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'),
-            GeneralUtility::getIndpEnv('TYPO3_PORT') ? (':' . GeneralUtility::getIndpEnv('TYPO3_PORT')) : '',
+            '%s?eID=%s&token=%d',
+            GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
             EidController::IDENTIFIER,
             $tokenUid
         );

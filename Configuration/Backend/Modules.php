@@ -13,12 +13,13 @@ return [
         'iconIdentifier'    => 'ext-pxasocialfeed-wizard-icon',
         'labels'            => 'LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf',
         'extensionName'     => 'PxaSocialFeed',
+        'stylesheet'        => 'EXT:core/Resources/Public/Css/backend.css',
         'controllerActions' => [
             AdministrationController::class => [
                 'index',
                 'editToken',
                 'updateToken',
-                'resetAccess',
+                'resetAccessToken',
                 'deleteToken',
                 'editConfiguration',
                 'updateConfiguration',
@@ -26,17 +27,9 @@ return [
                 'runConfiguration',
             ],
         ],
-        'routes'            => [
-            '_default'          => [
+        'routes' => [
+            '_default' => [
                 'target' => AdministrationController::class . '::index',
-            ],
-            'editConfiguration' => [
-                'path'   => '/Administration/editConfiguration',
-                'target' => AdministrationController::class . '::editConfiguration',
-            ],
-            'editToken'         => [
-                'path'   => '/Administration/editToken',
-                'target' => AdministrationController::class . '::editToken',
             ],
         ],
     ],

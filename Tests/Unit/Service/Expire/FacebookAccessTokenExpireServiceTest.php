@@ -29,7 +29,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function hasExpiredReturnFalseIfTokenValid()
+    public function hasExpiredReturnFalseIfTokenValid(): void
     {
         $mockedToken = $this->createMock(Token::class);
         $mockedToken
@@ -45,7 +45,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function hasExpiredReturnTrueIfTokenNotValid()
+    public function hasExpiredReturnTrueIfTokenNotValid(): void
     {
         $mockedToken = $this->createMock(Token::class);
         $mockedToken
@@ -61,7 +61,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function willExpireSoonCheckIfTokenLifeTimeIsLowAccordingToGivenValue()
+    public function willExpireSoonCheckIfTokenLifeTimeIsLowAccordingToGivenValue(): void
     {
         $expireAt = 3;
 
@@ -80,7 +80,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function expireWhenReturnNumberOfDaysOfTokenLifeTime()
+    public function expireWhenReturnNumberOfDaysOfTokenLifeTime(): void
     {
         $expireAt = (new \DateTime())->modify('+10 days');
 
@@ -98,7 +98,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function expireWhenReturnNumberZeroIfNoExpireDate()
+    public function expireWhenReturnNumberZeroIfNoExpireDate(): void
     {
         $mockedToken = $this->createMock(Token::class);
         $mockedToken
@@ -114,7 +114,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function expireWhenReturnNumberZeroIfNoExpireDateTokenExpired()
+    public function expireWhenReturnNumberZeroIfNoExpireDateTokenExpired(): void
     {
         $expireAt = (new \DateTime())->modify('-2 days');
 
@@ -132,7 +132,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function tokenRequireReturnTrueOnCorrectType()
+    public function tokenRequireReturnTrueOnCorrectType(): void
     {
         $token = new Token();
         $token->setType(Token::FACEBOOK);
@@ -145,7 +145,7 @@ class FacebookAccessTokenExpireServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function tokenRequireReturnFalseOnInCorrectType()
+    public function tokenRequireReturnFalseOnInCorrectType(): void
     {
         $token = new Token();
         $token->setType(Token::TWITTER);

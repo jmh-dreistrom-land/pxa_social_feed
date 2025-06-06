@@ -4,46 +4,35 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Event;
 
+use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
+use Pixelant\PxaSocialFeed\Domain\Model\Feed;
+
 final class BeforeUpdateYoutubeFeedEvent
 {
-    private $feedItem;
-    private $rawData;
-    private $configuration;
-
-    public function __construct($feedItem, $rawData, $configuration)
+     function __construct(
+        private Feed $feedItem,
+        private readonly array $rawData,
+        private readonly Configuration $configuration)
     {
-        $this->feedItem      = $feedItem;
-        $this->rawData       = $rawData;
-        $this->configuration = $configuration;
     }
 
-    public function getFeedItem()
+    public function getFeedItem(): Feed
     {
         return $this->feedItem;
     }
 
-    public function getRawData()
+    public function getRawData(): array
     {
         return $this->rawData;
     }
 
-    public function getConfiguration()
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
 
-    public function setFeedItem($feedItem): void
+    public function setFeedItem(Feed $feedItem): void
     {
         $this->feedItem = $feedItem;
-    }
-
-    public function setRawData($rawData): void
-    {
-        $this->rawData = $rawData;
-    }
-
-    public function setConfiguration($configuration): void
-    {
-        $this->configuration = $configuration;
     }
 }

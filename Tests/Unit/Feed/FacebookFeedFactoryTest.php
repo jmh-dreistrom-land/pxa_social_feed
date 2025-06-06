@@ -31,7 +31,7 @@ class FacebookFeedFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedSourceReturnFacebookSource()
+    public function getFeedSourceReturnFacebookSource(): void
     {
         self::assertInstanceOf(FacebookSource::class, $this->subject->getFeedSource(new Configuration()));
     }
@@ -39,7 +39,7 @@ class FacebookFeedFactoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFeedUpdaterReturnFacebookUpdater()
+    public function getFeedUpdaterReturnFacebookUpdater(): void
     {
         self::assertInstanceOf(FacebookFeedUpdater::class, $this->subject->getFeedUpdater());
     }

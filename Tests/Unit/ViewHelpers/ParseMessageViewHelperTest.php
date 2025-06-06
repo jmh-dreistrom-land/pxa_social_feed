@@ -12,7 +12,7 @@ class ParseMessageViewHelperTest extends TestCase
      * @test
      * @dataProvider parseMessageDataProvider
      */
-    public function parseMessage(int $type, string $text, string $expectaction)
+    public function parseMessage(int $type, string $text, string $expectaction): void
     {
         $result = ParseMessageViewHelper::parseFeedMessage($text, $type);
         self::assertEquals($expectaction, $result);

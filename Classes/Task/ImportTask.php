@@ -37,38 +37,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
- * Class ImportTask
- */
 class ImportTask extends AbstractTask
 {
     /**
      * Configurations uids
-     *
-     * @var array
      */
-    protected $configurations = [];
+    protected array $configurations = [];
 
-    /**
-     * @var string
-     */
-    protected $receiverEmail = '';
+    protected string $receiverEmail = '';
 
-    /**
-     * @var string
-     */
-    protected $senderEmail = '';
+    protected string $senderEmail = '';
 
-    /**
-     * @var bool
-     */
-    protected $runAllConfigurations = false;
+    protected bool $runAllConfigurations = false;
 
-    /**
-     * Execute scheduler task
-     *
-     * @return bool
-     */
     public function execute(): bool
     {
         $notificationService = $this->getNotificationService();
@@ -101,7 +82,7 @@ class ImportTask extends AbstractTask
      * Returns some additional information about indexing progress, shown in
      * the scheduler's task overview list.
      *
-     * @return    string    Information to display
+     * @return string Information to display
      */
     public function getAdditionalInformation(): string
     {
@@ -111,74 +92,47 @@ class ImportTask extends AbstractTask
         );
     }
 
-    /**
-     * @return array
-     */
     public function getConfigurations(): array
     {
         return $this->configurations;
     }
 
-    /**
-     * @param array $configurations
-     */
     public function setConfigurations(array $configurations): void
     {
         $this->configurations = $configurations;
     }
 
-    /**
-     * @return string
-     */
     public function getReceiverEmail(): string
     {
         return $this->receiverEmail;
     }
 
-    /**
-     * @param string $receiverEmail
-     */
     public function setReceiverEmail(string $receiverEmail): void
     {
         $this->receiverEmail = $receiverEmail;
     }
 
-    /**
-     * @return string
-     */
     public function getSenderEmail(): string
     {
         return $this->senderEmail;
     }
 
-    /**
-     * @param string $senderEmail
-     */
     public function setSenderEmail(string $senderEmail): void
     {
         $this->senderEmail = $senderEmail;
     }
 
-    /**
-     * @return NotificationService
-     */
     protected function getNotificationService(): NotificationService
     {
         $sender = $this->senderEmail ?: $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'];
         return GeneralUtility::makeInstance(NotificationService::class, $this->receiverEmail, $sender);
     }
 
-    /**
-     * @return bool
-     */
     public function isRunAllConfigurations(): bool
     {
         return $this->runAllConfigurations;
     }
 
-    /**
-     * @param bool $runAllConfigurations
-     */
     public function setRunAllConfigurations(bool $runAllConfigurations): void
     {
         $this->runAllConfigurations = $runAllConfigurations;

@@ -32,7 +32,7 @@ class ConfigurationValidatorTest extends UnitTestCase
     /**
      * @test
      */
-    public function trimObjectPropertiesWillTrimAllStringProperties()
+    public function trimObjectPropertiesWillTrimAllStringProperties(): void
     {
         $configuration = new Configuration();
         $configuration->setName('  test ');
