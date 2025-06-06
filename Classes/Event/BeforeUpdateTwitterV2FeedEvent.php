@@ -4,56 +4,41 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Event;
 
+use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
+use Pixelant\PxaSocialFeed\Domain\Model\Feed;
+
 final class BeforeUpdateTwitterV2FeedEvent
 {
-    private $feedItem;
-    private $rawData;
-    private $configuration;
-    private $includes;
-
-    public function __construct($feedItem, $rawData, $configuration, $includes)
+    public function __construct(
+        private Feed $feedItem,
+        private readonly array $rawData,
+        private readonly Configuration $configuration,
+        private readonly array $includes)
     {
-        $this->feedItem      = $feedItem;
-        $this->rawData       = $rawData;
-        $this->configuration = $configuration;
-        $this->includes      = $includes;
     }
 
-    public function getFeedItem()
+    public function getFeedItem(): Feed
     {
         return $this->feedItem;
     }
 
-    public function getRawData()
+    public function getRawData(): array
     {
         return $this->rawData;
     }
 
-    public function getConfiguration()
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
-    public function getIncludes()
+
+    public function getIncludes(): array
     {
         return $this->includes;
     }
 
-    public function setFeedItem($feedItem): void
+    public function setFeedItem(Feed $feedItem): void
     {
         $this->feedItem = $feedItem;
-    }
-
-    public function setRawData($rawData): void
-    {
-        $this->rawData = $rawData;
-    }
-
-    public function setConfiguration($configuration): void
-    {
-        $this->configuration = $configuration;
-    }
-    public function setIncludes($includes): void
-    {
-        $this->includes = $includes;
     }
 }

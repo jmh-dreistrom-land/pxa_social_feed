@@ -9,12 +9,8 @@ use Pixelant\PxaSocialFeed\Domain\Model\Feed;
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use Pixelant\PxaSocialFeed\Event\BeforeUpdateYoutubeFeedEvent;
 use Pixelant\PxaSocialFeed\Feed\Source\FeedSourceInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class YoutubeFeedUpdater
- */
 class YoutubeFeedUpdater extends BaseUpdater
 {
     /**
@@ -37,9 +33,9 @@ class YoutubeFeedUpdater extends BaseUpdater
             }
 
             $this->updateFeedItem($feedItem, $rawData);
-            // dispatch event
-            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-            $eventDispatcher->dispatch(new BeforeUpdateYoutubeFeedEvent($feedItem, $rawData, $source->getConfiguration()));
+
+            $this->eventDispatcher->dispatch(new BeforeUpdateYoutubeFeedEvent($feedItem, $rawData, $source->getConfiguration()));
+
             $this->addOrUpdateFeedItem($feedItem);
         }
     }
@@ -78,6 +74,7 @@ class YoutubeFeedUpdater extends BaseUpdater
      */
     protected function createFeedItem(array $rawData, Configuration $configuration): Feed
     {
+        /** @var Feed $feedItem */
         $feedItem = GeneralUtility::makeInstance(Feed::class);
 
         $feedItem->setExternalIdentifier($rawData['id']['videoId']);

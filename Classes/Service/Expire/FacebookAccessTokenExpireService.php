@@ -6,19 +6,10 @@ namespace Pixelant\PxaSocialFeed\Service\Expire;
 
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
 
-/**
- * Class FacebookAccessTokenExpireService
- */
 class FacebookAccessTokenExpireService
 {
-    /**
-     * @var Token
-     */
-    protected $token;
+    protected Token $token;
 
-    /**
-     * @param Token $token
-     */
     public function __construct(Token $token)
     {
         $this->token = $token;

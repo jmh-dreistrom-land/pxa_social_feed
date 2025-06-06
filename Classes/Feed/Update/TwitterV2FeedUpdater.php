@@ -11,9 +11,6 @@ use Pixelant\PxaSocialFeed\Event\BeforeUpdateTwitterV2FeedEvent;
 use Pixelant\PxaSocialFeed\Feed\Source\FeedSourceInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class TwitterFeedUpdater
- */
 class TwitterV2FeedUpdater extends BaseUpdater
 {
     /**
@@ -39,8 +36,9 @@ class TwitterV2FeedUpdater extends BaseUpdater
             }
 
             $this->updateFeedItem($feedItem, $rawData, $includes);
-            // dispatch event
+
             $this->eventDispatcher->dispatch(new BeforeUpdateTwitterV2FeedEvent($feedItem, $rawData, $source->getConfiguration(), $includes));
+
             $this->addOrUpdateFeedItem($feedItem);
         }
     }
@@ -54,6 +52,7 @@ class TwitterV2FeedUpdater extends BaseUpdater
      */
     protected function createFeedItem(array $rawData, Configuration $configuration): Feed
     {
+        /** @var Feed $feedItem */
         $feedItem = GeneralUtility::makeInstance(Feed::class);
         $date = new \DateTime($rawData['created_at']);
 

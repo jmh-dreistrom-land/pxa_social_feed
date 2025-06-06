@@ -9,12 +9,8 @@ use Pixelant\PxaSocialFeed\Domain\Model\Feed;
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use Pixelant\PxaSocialFeed\Event\BeforeUpdateInstagramFeedEvent;
 use Pixelant\PxaSocialFeed\Feed\Source\FeedSourceInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class InstagramFeedUpdater
- */
 class InstagramFeedUpdater extends BaseUpdater
 {
     /**
@@ -40,10 +36,9 @@ class InstagramFeedUpdater extends BaseUpdater
 
             // Add/update instagram feed data gotten from facebook
             $this->populateGraphInstagramFeed($feedItem, $rawData);
-            // dispatch event
-            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
-            $eventDispatcher->dispatch(new BeforeUpdateInstagramFeedEvent($feedItem, $rawData, $source->getConfiguration()));
-            // Add/update
+
+            $this->eventDispatcher->dispatch(new BeforeUpdateInstagramFeedEvent($feedItem, $rawData, $source->getConfiguration()));
+
             $this->addOrUpdateFeedItem($feedItem);
         }
     }

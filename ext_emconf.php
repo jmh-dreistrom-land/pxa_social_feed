@@ -4,7 +4,7 @@
  * Extension Manager/Repository config file for ext: "pxa_social_feed"
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = [
+$EM_CONF['pxa_social_feed'] = [
     'title' => 'Pxa Social Feed',
     'description' => 'Add Facebook, Instagram, and Twitter feeds to your site.',
     'category' => 'plugin',
@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'info@pixelant.net',
     'author_company' => 'Pixelant',
     'state' => 'stable',
-    'version' => '4.0.0',
+    'version' => '4.1.0',
     'constraints' => [
         'depends' => [
             'typo3' => '13.4.0-13.9.99',

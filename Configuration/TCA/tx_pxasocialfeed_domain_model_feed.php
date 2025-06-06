@@ -116,30 +116,30 @@ return (function () {
                 ],
             ],
             'fal_media' => [
-              'exclude' => true,
-              'label' => $ll . 'tx_pxasocialfeed_domain_model_feeds.fal_media',
-              'config' => [
-                  ### !!! Watch out for fieldName different from columnName
-                  'type' => 'file',
-                  'allowed' => 'jpg,jpeg,png,gif,svg',
-                  'appearance' => [
-                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
-                  ],
-                  'foreign_match_fields' => [
-                    'fieldname' => 'fal_media',
-                    'tablenames' => 'tx_pxasocialfeed_domain_model_feed',
-                  ],
-                  'overrideChildTca' => [
-                    'types' => [
-                      \TYPO3\CMS\Core\Resource\FileType::IMAGE->value => [
-                        'showitem' => '
+                'exclude' => true,
+                'label' => $ll . 'tx_pxasocialfeed_domain_model_feeds.fal_media',
+                'config' => [
+                    ### !!! Watch out for fieldName different from columnName
+                    'type' => 'file',
+                    'allowed' => 'jpg,jpeg,png,gif,svg',
+                    'appearance' => [
+                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
+                    ],
+                    'foreign_match_fields' => [
+                        'fieldname' => 'fal_media',
+                        'tablenames' => 'tx_pxasocialfeed_domain_model_feed',
+                    ],
+                    'overrideChildTca' => [
+                        'types' => [
+                            \TYPO3\CMS\Core\Resource\FileType::IMAGE->value => [
+                                'showitem' => '
                           --palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                           --palette--;;filePalette
                         ',
-                      ],
+                            ],
+                        ],
                     ],
-                  ],
-              ],
+                ],
             ],
             'likes' => [
                 'exclude' => 1,

@@ -1,3 +1,15 @@
-<div class="tx-pxa-social-feed">
-	<f:render section="main" />
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<div class="tx-pxa-social-feed-a">
+    <f:render section="main" />
+
+    <f:comment>The entire front-end output needs to be refactored as it is completely outdated</f:comment>
+    <f:asset.css identifier="pxaSocialFeed" href="EXT:pxa_social_feed/Resources/Public/Css/socialFeed.css" />
+    <f:asset.script identifier="pxaSocialFeedJquery" src="EXT:pxa_social_feed/Resources/Public/JavaScript/jquery.dotdotdot.min.js" defer="true" />
+    <f:asset.script identifier="pxaSocialFeedCarousel" src="EXT:pxa_social_feed/Resources/Public/JavaScript/owl.carousel.min.js" defer="true" />
+    <f:asset.script identifier="pxaSocialFeedMasonry" src="EXT:pxa_social_feed/Resources/Public/JavaScript/masonry.pkgd.min.js" defer="true" />
+    <f:asset.script identifier="pxaSocialFeedImagesloaded" src="EXT:pxa_social_feed/Resources/Public/JavaScript/imagesloaded.pkgd.min.js" defer="true" />
+    <f:asset.script identifier="pxaSocialFeedSocialFeed" src="EXT:pxa_social_feed/Resources/Public/JavaScript/socialFeed.js" defer="true" />
 </div>
+
+</html>

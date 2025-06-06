@@ -4,13 +4,6 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Feed\Source;
 
-use Pixelant\PxaSocialFeed\Domain\Model\Token;
-use Pixelant\PxaSocialFeed\Domain\Repository\TokenRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-/**
- * Class FacebookSource
- */
 class FacebookSource extends BaseFacebookSource
 {
     /**
@@ -20,24 +13,22 @@ class FacebookSource extends BaseFacebookSource
      */
     public function load(): array
     {
-        // Get facebook page access token
-        $tokenRepository = GeneralUtility::makeInstance(TokenRepository::class);
-        /** @var Token $pageAccessToken */
-        $pageAccessToken = $tokenRepository->findFacebookPageToken(
-            $this->getConfiguration()->getToken(),
-            $this->configuration->getSocialId()
-        )->getFirst();
+        $pageAccessToken = $this->getConfiguration()->getToken();
 
         $fb = $pageAccessToken->getFb();
         $endPointEntry = $this->getConfiguration()->getEndPointEntry();
         if (!in_array($endPointEntry, ['feed', 'posts'])) {
             $endPointEntry = 'feed';
         }
-        $endPointUrl = $this->generateEndPoint($this->getConfiguration()->getSocialId(), $endPointEntry);
-        $response = file_get_contents(
+
+        $socialId = $pageAccessToken->isInstagramType() || $pageAccessToken->isFacebookType() ? $this->getConfiguration()->getSocialId() : $pageAccessToken->getFbSocialId();
+
+        $endPointUrl = $this->generateEndPoint($socialId, $endPointEntry);
+        $response = $this->requestFactory->request(
             $fb::BASE_GRAPH_URL .
             self::GRAPH_VERSION . '/' . $endPointUrl
         );
+        $response = (string)$response->getBody();
         $response = json_decode($response, true);
 
         return $this->getDataFromResponse($response);

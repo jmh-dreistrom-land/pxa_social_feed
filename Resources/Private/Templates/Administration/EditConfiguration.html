@@ -4,14 +4,13 @@
     <f:layout name="Module" />
 
     <f:section name="Content">
-        <f:comment><!--clean all messages--></f:comment>
+        <f:comment>Empty flash messages from extBase</f:comment>
         <f:flashMessages as="messages" />
+        <f:flashMessages queueIdentifier="pxa-social-feed" />
 
         <f:if condition="{tokens -> f:count()} > 0">
             <f:then>
                 <h4><f:translate key="pxasocialfeed_module.labels.configuration_action"/></h4>
-
-                <f:render partial="Backend/ValidationErrors" arguments="{for: 'configuration'}"/>
 
                 <f:form action="updateConfiguration" name="configuration" object="{configuration}">
                     <table class="table table-bordered">
@@ -79,12 +78,12 @@
                             <td><f:form.textfield property="maxItems" class="form-control" value="{f:if(condition: configuration, else: '10')}"/></td>
                         </tr>
                         <tr>
-                          <td><f:translate key="module.perform_clean_up" /></td>
-                          <td>
-                              <label class="btn btn-default btn-checkbox ">
-                                  <f:form.checkbox property="performCleanUp" value="1" />
-                              </label>
-                          </td>
+                            <td><f:translate key="module.perform_clean_up" /></td>
+                            <td>
+                                <label class="btn btn-default btn-checkbox ">
+                                    <f:form.checkbox property="performCleanUp" value="1" />
+                                </label>
+                            </td>
                         </tr>
                         <tr>
                             <td><f:translate key="module.storage"/></td>
@@ -96,26 +95,26 @@
                             <td><f:translate key="module.token"/></td>
                             <td><f:form.select property="token" options="{tokens}" optionLabelField="title" class="form-select"/></td>
                         </tr>
-                      <tr>
-                        <td><f:translate key="module.image_size"/></td>
-                        <td><f:form.select property="imageSize" options="{normal_images: 'Normal Images', small_images: 'Small Images'}" class="form-select"/></td>
-                      </tr>
-                      <tr>
-                        <td><f:translate key="module.hidden"/></td>
-                        <td>
-                            <label class="btn btn-default btn-checkbox ">
-                                <f:form.checkbox property="hidden" value="1" />
-                            </label>
-                        </td>
-                      </tr>
+                        <tr>
+                            <td><f:translate key="module.image_size"/></td>
+                            <td><f:form.select property="imageSize" options="{normal_images: 'Normal Images', small_images: 'Small Images'}" class="form-select"/></td>
+                        </tr>
+                        <tr>
+                            <td><f:translate key="module.hidden"/></td>
+                            <td>
+                                <label class="btn btn-default btn-checkbox ">
+                                    <f:form.checkbox property="hidden" value="1" />
+                                </label>
+                            </td>
+                        </tr>
 
-                      <f:render partial="Backend/Form/BeGroupsSelect" arguments="{beGroups: beGroups}" />
-                      <tr>
-                          <td></td>
-                          <td>
-                              <f:form.submit class="btn btn-success" name="save" value="{f:translate(key: 'module.submit')}"/>
-                          </td>
-                      </tr>
+                        <f:render partial="Backend/Form/BeGroupsSelect" arguments="{beGroups: beGroups}" />
+                        <tr>
+                            <td></td>
+                            <td>
+                                <f:form.submit class="btn btn-success" name="save" value="{f:translate(key: 'module.submit')}"/>
+                            </td>
+                        </tr>
                     </table>
                 </f:form>
 

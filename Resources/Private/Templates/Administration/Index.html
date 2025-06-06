@@ -6,13 +6,17 @@
     <f:section name="Content">
         <f:asset.module identifier="bootstrap"/>
         <f:asset.module identifier="@typo3/backend/tabs.js"/>
+        <f:asset.script identifier="clipboard.min.js" src="EXT:pxa_social_feed/Resources/Public/JavaScript/Backend/clipboard.min.js" defer="true" />
+        <f:asset.css href="EXT:pxa_social_feed/Resources/Public/Css/Backend/SocialFeedModule.css" identifier="SocialFeedModule" />
 
-        <f:flashMessages />
+        <f:comment>Empty flash messages from extBase</f:comment>
+        <f:flashMessages as="messages" />
+        <f:flashMessages queueIdentifier="pxa-social-feed" />
 
         <div id="tokens-confs" role="tabpanel">
             <ul id="token-configuration-tabs" class="nav nav-tabs form-section-tabs t3js-tabs" role="tablist" data-store-last-tab="1">
                 <li class="nav-item t3js-tabmenu-item" role="presentation">
-                    <button id="configurations-tab" type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#configurations" aria-controls="configurations" aria-selected="true" role="tab">
+                    <button id="configurations-tab" type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#configurations" aria-controls="configurations" aria-selected="true" role="tab">
                         <f:translate key="module.configurations"/>
                     </button>
                 </li>
@@ -24,7 +28,7 @@
             </ul>
 
             <div class="tab-content">
-                <div id="configurations" class="tab-pane show active" role="tabpanel" aria-labelledby="configurations-tab">
+                <div id="configurations" class="tab-pane active" role="tabpanel" aria-labelledby="configurations-tab">
                     <div class="form-section">
                         <f:render partial="Backend/ListConfigurations" section="list" arguments="{configurations: configurations, isAdmin: isAdmin}"/>
                         <f:link.action class="btn btn-default" action="editConfiguration">

@@ -93,7 +93,7 @@ class FeedRepository extends Repository
      *
      * @param array $configurations
      * @param int $limit
-     * @return QueryResult<Feed>
+     * @return QueryResultInterface<Feed>
      */
     public function findByConfigurations(array $configurations, int $limit = 0): QueryResultInterface
     {
@@ -101,9 +101,9 @@ class FeedRepository extends Repository
 
         if (!empty($configurations)) {
             $query->matching(
-                $query->in(
-                    'configuration',
-                    $configurations
+                $query->logicalAnd(
+                    $query->in('configuration', $configurations),
+                    $query->equals('configuration.hidden', '0')
                 )
             );
         }

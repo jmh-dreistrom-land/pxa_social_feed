@@ -6,19 +6,16 @@ namespace Pixelant\PxaSocialFeed\Event;
 
 final class YoutubeEndPointRequestFieldsEvent
 {
-    private $fields;
-
-    public function __construct($fields)
+    public function __construct(private array $fields)
     {
-        $this->fields = $fields;
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function setFields($fields): void
+    public function setFields(array $fields): void
     {
         $this->fields = $fields;
     }

@@ -28,6 +28,10 @@ namespace Pixelant\PxaSocialFeed\Domain\Validation\Validator;
  ***************************************************************/
 
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -62,5 +66,18 @@ abstract class AbstractValidator extends ExtbaseAbstractValidator
     {
         return ConfigurationUtility::isFeatureEnabled('editorRestriction')
             && ConfigurationUtility::isFeatureEnabled('editorRestrictionIsRequired');
+    }
+
+    protected function addErrorToMessageQueue(string $errorMessage): void
+    {
+        $flashMessage = GeneralUtility::makeInstance(
+            FlashMessage::class,
+            $errorMessage,
+            '',
+            ContextualFeedbackSeverity::ERROR,
+            true);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $messageQueue = $flashMessageService->getMessageQueueByIdentifier('pxa-social-feed');
+        $messageQueue->enqueue($flashMessage);
     }
 }

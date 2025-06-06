@@ -32,11 +32,11 @@ use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/**
- * The repository for Feeds
- */
 class ConfigurationRepository extends AbstractBackendRepository
 {
+    /**
+     * @var array $defaultOrderings
+     */
     protected $defaultOrderings = [
         'crdate' => QueryInterface::ORDER_DESCENDING,
     ];

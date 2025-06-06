@@ -9,23 +9,10 @@ use Pixelant\PxaSocialFeed\Domain\Model\Feed;
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use Pixelant\PxaSocialFeed\Event\BeforeUpdateTwitterFeedEvent;
 use Pixelant\PxaSocialFeed\Feed\Source\FeedSourceInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class TwitterFeedUpdater
- */
 class TwitterFeedUpdater extends BaseUpdater
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
     /**
      * Create/Update feed items
      *
@@ -46,7 +33,9 @@ class TwitterFeedUpdater extends BaseUpdater
             }
 
             $this->updateFeedItem($feedItem, $rawData);
+
             $this->eventDispatcher->dispatch(new BeforeUpdateTwitterFeedEvent($feedItem, $rawData, $source->getConfiguration()));
+
             $this->addOrUpdateFeedItem($feedItem);
         }
     }
@@ -60,6 +49,7 @@ class TwitterFeedUpdater extends BaseUpdater
      */
     protected function createFeedItem(array $rawData, Configuration $configuration): Feed
     {
+        /** @var Feed $feedItem */
         $feedItem = GeneralUtility::makeInstance(Feed::class);
         $date = new \DateTime($rawData['created_at']);
 

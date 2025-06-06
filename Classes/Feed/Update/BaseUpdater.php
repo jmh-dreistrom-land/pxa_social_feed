@@ -6,7 +6,6 @@ namespace Pixelant\PxaSocialFeed\Feed\Update;
 
 use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\DBAL\Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
@@ -17,6 +16,8 @@ use Pixelant\PxaSocialFeed\Event\ChangedFeedItemEvent;
 use Pixelant\PxaSocialFeed\Event\RemovedFeedItemEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\IllegalFileExtensionException;
@@ -33,16 +34,9 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Reflection\ClassSchema\Exception\NoSuchPropertyException;
 use TYPO3\CMS\Extbase\Reflection\Exception\UnknownClassException;
 
-/**
- * Class BaseUpdater
- */
+#[Autoconfigure(public: true)]
 abstract class BaseUpdater implements FeedUpdaterInterface
 {
-    /**
-     * @var FeedRepository
-     */
-    protected $feedRepository;
-
     /**
      * Keep all processed feed items
      *
@@ -51,17 +45,14 @@ abstract class BaseUpdater implements FeedUpdaterInterface
     protected $feeds;
 
     /**
-     * @var MimeTypeDetector
-     */
-    protected $mimeTypeDetector;
-
-    /**
      * BaseUpdater constructor.
      */
-    public function __construct()
+    public function __construct(
+        protected readonly FeedRepository $feedRepository,
+        protected readonly MimeTypeDetector $mimeTypeDetector,
+        protected readonly EventDispatcherInterface $eventDispatcher
+    )
     {
-        $this->mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
-        $this->feedRepository = GeneralUtility::makeInstance(FeedRepository::class);
         $this->feeds = new ObjectStorage();
     }
 
@@ -80,12 +71,11 @@ abstract class BaseUpdater implements FeedUpdaterInterface
      */
     public function cleanUp(Configuration $configuration): void
     {
-        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
         if (count($this->feeds) > 0) {
             /** @var Feed $feedToRemove */
             foreach ($this->feedRepository->findNotInStorage($this->feeds, $configuration) as $feedToRemove) {
-                $eventDispatcher->dispatch(new ChangedFeedItemEvent($feedToRemove));
-                $eventDispatcher->dispatch(new RemovedFeedItemEvent($feedToRemove));
+                $this->eventDispatcher->dispatch(new RemovedFeedItemEvent($feedToRemove));
+
                 $this->feedRepository->remove($feedToRemove);
             }
         }
@@ -99,10 +89,9 @@ abstract class BaseUpdater implements FeedUpdaterInterface
      */
     protected function addOrUpdateFeedItem(Feed $feed): void
     {
-        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
         // Check if $feed is new or modified and emit change event
         if ($feed->_isDirty() || $feed->_isNew()) {
-            $eventDispatcher->dispatch(new ChangedFeedItemEvent($feed));
+            $this->eventDispatcher->dispatch(new ChangedFeedItemEvent($feed));
         }
 
         $this->feeds->attach($feed);
@@ -209,8 +198,8 @@ abstract class BaseUpdater implements FeedUpdaterInterface
 
         $file = $downloadFolder->getFile($filename);
         if ($file == null) {
-            $httpClient = GeneralUtility::makeInstance(Client::class);
-            $response = $httpClient->get($url);
+            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+            $response = $requestFactory->request($url);
             if ($response->getStatusCode() === 200) {
                 $mimetype = $response->getHeader('Content-Type')[0];
                 $fileExtensions =  $this->mimeTypeDetector->getFileExtensionsForMimeType($mimetype);

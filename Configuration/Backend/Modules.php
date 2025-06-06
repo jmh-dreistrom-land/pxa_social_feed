@@ -19,7 +19,7 @@ return [
                 'index',
                 'editToken',
                 'updateToken',
-                'resetAccess',
+                'resetAccessToken',
                 'deleteToken',
                 'editConfiguration',
                 'updateConfiguration',
@@ -27,17 +27,9 @@ return [
                 'runConfiguration',
             ],
         ],
-        'routes'            => [
-            '_default'          => [
+        'routes' => [
+            '_default' => [
                 'target' => AdministrationController::class . '::index',
-            ],
-            'editConfiguration' => [
-                'path'   => '/Administration/editConfiguration',
-                'target' => AdministrationController::class . '::editConfiguration',
-            ],
-            'editToken'         => [
-                'path'   => '/Administration/editToken',
-                'target' => AdministrationController::class . '::editToken',
             ],
         ],
     ],

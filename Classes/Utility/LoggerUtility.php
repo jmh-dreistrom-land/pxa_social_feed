@@ -6,9 +6,6 @@ namespace Pixelant\PxaSocialFeed\Utility;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
-/**
- * Class LoggerUtility
- */
 class LoggerUtility
 {
     /**

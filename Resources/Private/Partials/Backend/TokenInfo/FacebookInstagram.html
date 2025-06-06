@@ -4,7 +4,7 @@
 
 <f:if condition="{token.validFacebookAccessToken}">
     <f:then>
-        <p class="bg-success bg-notification">
+        <p class="is-valid bg-notification">
             <f:translate key="module.token_valid" />
             <f:if condition="{token.facebookAccessTokenMetadataExpirationDate}">
                 <f:format.date format="d-m-Y">{token.facebookAccessTokenMetadataExpirationDate}</f:format.date>
@@ -12,11 +12,13 @@
             <br>
             <f:translate key="module.valid_days" arguments="{0: token.facebookAccessTokenValidPeriod}" />
             <br><br>
-            <f:link.action action="resetAccessToken"
-                           arguments="{resetToken: token}"
-                           data="{confirmation-title: '{f:translate(key: \'module.reset_token\')}', confirmation-message: '{f:translate(key: \'module.reset_token_question\')}'}"
-                           class="btn btn-default btn-sm confirmation-action">
-                    <span class="btn btn-default" aria-hidden="true">
+            <f:link.action
+                action="resetAccessToken"
+                arguments="{resetToken: token}"
+                data="{confirmation-title: '{f:translate(key: \'module.reset_token\')}', confirmation-message: '{f:translate(key: \'module.reset_token_question\')}'}"
+                class="btn btn-default confirmation-action"
+            >
+                    <span aria-hidden="true">
                         <f:translate key="module.regenerate_access_token" />
                     </span>
             </f:link.action>
@@ -27,7 +29,7 @@
                               loginUrlAs="loginUrl"
                               redirectUrlAs="redirectUrl"
                               permissions="{permissions}">
-            <p class="bg-warning bg-notification">
+            <p class="has-warning bg-notification">
                 <b>Access token generation is required</b>
                 <br>
                 <br>
@@ -59,7 +61,7 @@
                 </b>
             </a>
 
-            <f:link.action action="index" arguments="{activeTokenTab: '1'}" class="btn btn-default">
+            <f:link.action action="index" class="btn btn-default">
                 <f:translate key="module.refresh" />
             </f:link.action>
         </pxa:facebookLoginUrl>

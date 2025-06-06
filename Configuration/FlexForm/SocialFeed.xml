@@ -9,7 +9,7 @@
                 <sheetTitle>LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf:flexform.name</sheetTitle>
                 <type>array</type>
                 <el>
-                    <switchableControllerActions>
+                    <settings.loadType>
                         <label>LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf:flexform.load_type</label>
                         <config>
                             <type>select</type>
@@ -17,15 +17,15 @@
                             <items>
                                 <numIndex index="0">
                                     <numIndex index="0">Standard</numIndex>
-                                    <numIndex index="1">\Pixelant\PxaSocialFeed\Controller\FeedsController-&gt;list</numIndex>
+                                    <numIndex index="1">standard</numIndex>
                                 </numIndex>
                                 <numIndex index="1">
                                     <numIndex index="0">Ajax</numIndex>
-                                    <numIndex index="1">\Pixelant\PxaSocialFeed\Controller\FeedsController-&gt;listAjax;\Pixelant\PxaSocialFeed\Controller\FeedsController-&gt;loadFeedAjax</numIndex>
+                                    <numIndex index="1">ajax</numIndex>
                                 </numIndex>
                             </items>
                         </config>
-                    </switchableControllerActions>
+                    </settings.loadType>
                     <settings.presentation>
                         <label>LLL:EXT:pxa_social_feed/Resources/Private/Language/locallang_be.xlf:flexform.presentation</label>
                         <config>

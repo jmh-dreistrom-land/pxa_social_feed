@@ -18,21 +18,14 @@ class Facebook extends \League\OAuth2\Client\Provider\Facebook
 {
     /**
      * A toggle to enable the beta tier URL's.
-     * @var bool
      */
-    protected $enableBetaMode = false;
+    protected bool $enableBetaMode = false;
 
-    /**
-     * @return string
-     */
     public function getClientId(): string
     {
         return $this->clientId;
     }
 
-    /**
-     * @return string
-     */
     public function getClientSecret(): string
     {
         return $this->clientSecret;
@@ -53,11 +46,6 @@ class Facebook extends \League\OAuth2\Client\Provider\Facebook
         }, $response['data']);
     }
 
-    /**
-     * @param AccessToken $token The Facebook User token
-     *
-     * @return string
-     */
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
         $fields = [
@@ -74,7 +62,7 @@ class Facebook extends \League\OAuth2\Client\Provider\Facebook
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
         return $this->getBaseGraphUrl() . $this->graphApiVersion . '/me?fields=' . implode(',', $fields)
-                        . '&access_token=' . $token . '&appsecret_proof=' . $appSecretProof;
+            . '&access_token=' . $token . '&appsecret_proof=' . $appSecretProof;
     }
 
     /**
@@ -108,25 +96,16 @@ class Facebook extends \League\OAuth2\Client\Provider\Facebook
         return $response;
     }
 
-    /**
-     * @return string
-     */
     protected function getBaseGraphUrl(): string
     {
         return $this->enableBetaMode ? static::BASE_GRAPH_URL_BETA : static::BASE_GRAPH_URL;
     }
 
-    /**
-     * @param string      $userId
-     * @param AccessToken $token
-     *
-     * @return string
-     */
     protected function getLongLivePageTokenUrl(string $userId, AccessToken $token): string
     {
         $appSecretProof = AppSecretProof::create($this->clientSecret, $token->getToken());
 
         return $this->getBaseGraphUrl() . $this->graphApiVersion .
-               "/{$userId}/accounts?access_token=" . $token . '&appsecret_proof=' . $appSecretProof;
+            "/{$userId}/accounts?access_token=" . $token . '&appsecret_proof=' . $appSecretProof;
     }
 }

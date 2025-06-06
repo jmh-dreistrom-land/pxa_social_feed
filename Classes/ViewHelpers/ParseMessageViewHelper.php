@@ -6,11 +6,7 @@ use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use Pixelant\PxaSocialFeed\Exception\UnsupportedTokenType;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
- * Class ParseMessageViewHelper
- */
 class ParseMessageViewHelper extends AbstractViewHelper
 {
     /**
@@ -78,7 +74,7 @@ class ParseMessageViewHelper extends AbstractViewHelper
                     function ($matches) {
                         return sprintf(
                             '<a target="_blank" rel="noreferrer" '
-                                . 'href="https://www.facebook.com/hashtag/%s?source=feed_text">#%s</a>',
+                            . 'href="https://www.facebook.com/hashtag/%s?source=feed_text">#%s</a>',
                             rawurlencode($matches[1]),
                             htmlspecialchars($matches[1])
                         );
@@ -121,7 +117,7 @@ class ParseMessageViewHelper extends AbstractViewHelper
                     function ($matches) {
                         return sprintf(
                             '<a target="_blank" rel="noreferrer" '
-                                . 'href="https://www.instagram.com/explore/tags/%s/">#%s</a>',
+                            . 'href="https://www.instagram.com/explore/tags/%s/">#%s</a>',
                             rawurlencode($matches[1]),
                             htmlspecialchars($matches[1])
                         );
@@ -148,7 +144,7 @@ class ParseMessageViewHelper extends AbstractViewHelper
                     function ($matches) {
                         return sprintf(
                             '<a target="_blank" rel="noreferrer" '
-                                . 'href="https://www.youtube.com/results?search_query=%s">#%s</a>',
+                            . 'href="https://www.youtube.com/results?search_query=%s">#%s</a>',
                             rawurlencode('#' . $matches[1]),
                             htmlspecialchars($matches[1])
                         );
