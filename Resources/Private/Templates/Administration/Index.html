@@ -20,8 +20,8 @@
                         <f:translate key="module.configurations"/>
                     </button>
                 </li>
-                <li class="nav-item t3js-tabmenu-item" role="presentation">
-                    <button id="tokens-tab" type="button" class="nav-link{f:if(condition: isTokensValid, then:'', else: ' has-validation-error ')}" data-bs-toggle="tab" data-bs-target="#tokens" aria-controls="tokens" aria-selected="false" role="tab">
+                <li class="nav-item t3js-tabmenu-item{f:if(condition: isTokensValid, then:'', else: ' has-validation-error')}" role="presentation">
+                    <button id="tokens-tab" type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#tokens" aria-controls="tokens" aria-selected="false" role="tab">
                         <f:translate key="module.tokens"/>
                     </button>
                 </li>
