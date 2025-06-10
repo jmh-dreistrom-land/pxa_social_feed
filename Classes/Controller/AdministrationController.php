@@ -191,9 +191,7 @@ class AdministrationController extends ActionController
 
             if ( $tokenToDelete->getType () === Token::FACEBOOK ) {
                 // Remove all page access tokens created by this token
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getConnectionForTable('tx_pxasocialfeed_domain_model_token');
-                $queryBuilder->delete('tx_pxasocialfeed_domain_model_token', ['parent_token' => $tokenToDelete->getUid ()]);
+                $this->tokenRepository->removeAllPageTokensByParentToken($tokenToDelete->getUid());
             }
 
             $this->pushFlashMessage($this->translate('action_delete'));
