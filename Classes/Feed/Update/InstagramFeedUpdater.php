@@ -57,7 +57,9 @@ class InstagramFeedUpdater extends BaseUpdater
             ? ($data['thumbnail_url'] ?: $data['media_url'] ?: '') // Thumbnail or Media url for video
             : ($data['media_url'] ?: ''); // Media or empty string
 
-        $imageRef = $this->storeImg($media, $feedItem);
+        // remove dynamic parts from media url
+        $urlForFilenameHash = preg_replace('/(&_nc_gid=[^&]+)|(&oh=[^&]+)/', '', $media);
+        $imageRef = $this->storeImg($media, $feedItem, $urlForFilenameHash);
         if ($imageRef != null && !$this->checkIfFalRelationIfAlreadyExists($feedItem->getFalMedia(), $imageRef)) {
             $feedItem->addFalMedia($imageRef);
         }
