@@ -14,7 +14,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewInterface;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 #[AsEventListener(
     identifier: 'pxa-social-feed/content-element-preview-rendering',
@@ -29,7 +28,7 @@ class ContentElementPreview
      */
     private $templatePath = 'PageLayoutView/PluginPreview.html';
 
-    public function __construct(private readonly ViewFactoryInterface $viewFactory)
+    public function __construct(protected readonly ViewFactoryInterface $viewFactory)
     {
     }
 
@@ -82,7 +81,7 @@ class ContentElementPreview
         return $view->render($this->templatePath);
     }
 
-    private function getView(): ViewInterface
+    protected function getView(): ViewInterface
     {
         $viewFactoryData = new ViewFactoryData(
             templateRootPaths: [
@@ -100,12 +99,12 @@ class ContentElementPreview
         return $this->viewFactory->create($viewFactoryData);
     }
 
-    private function getFlexFormService()
+    protected function getFlexFormService()
     {
         return GeneralUtility::makeInstance(FlexFormService::class);
     }
 
-    private function getRequest(): ServerRequestInterface
+    protected function getRequest(): ServerRequestInterface
     {
         return $GLOBALS['TYPO3_REQUEST'];
     }
