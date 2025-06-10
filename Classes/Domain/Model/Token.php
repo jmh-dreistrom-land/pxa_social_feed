@@ -34,7 +34,6 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
 use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
-use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeedFactory;
 use Pixelant\PxaSocialFeed\Feed\Source\FacebookSource;
 use Pixelant\PxaSocialFeed\Provider\Facebook;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
