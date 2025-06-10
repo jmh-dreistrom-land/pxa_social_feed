@@ -148,14 +148,14 @@ abstract class BaseUpdater implements FeedUpdaterInterface
      * @throws InsufficientFileWritePermissionsException
      * @throws InsufficientUserPermissionsException
      */
-    protected function storeImg(string $url, Feed $feed): ?FileReference
+    protected function storeImg(string $url, Feed $feed, ?string $urlForFilenameHash = null): ?FileReference
     {
         $extbaseFileReference = null;
         if (empty($url)) {
             return $extbaseFileReference;
         }
 
-        $imageFile = $this->downloadImage($url, $feed->getConfiguration());
+        $imageFile = $this->downloadImage($url, $feed->getConfiguration(), $urlForFilenameHash);
         if ($imageFile) {
             $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
             $extbaseFileReference->setOriginalFile($imageFile);
@@ -182,7 +182,7 @@ abstract class BaseUpdater implements FeedUpdaterInterface
      * @throws InsufficientFileWritePermissionsException
      * @throws InsufficientUserPermissionsException
      */
-    protected function downloadImage(string $url, Configuration $configuration): ?File
+    protected function downloadImage(string $url, Configuration $configuration, ?string $urlForFilenameHash = null): ?File
     {
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $storage = $resourceFactory->getDefaultStorage();
@@ -194,17 +194,17 @@ abstract class BaseUpdater implements FeedUpdaterInterface
             $downloadFolder = $storage->getFolder($folderPath);
         }
 
-        $filename = md5($url);
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $response = $requestFactory->request($url);
+        $mimetype = $response->getHeader('Content-Type')[0];
+        $fileExtensions =  $this->mimeTypeDetector->getFileExtensionsForMimeType($mimetype);
+        $filename = md5($urlForFilenameHash ?? $url);
+        $filename = $filename . ($fileExtensions[0] ?? false ? '.' . $fileExtensions[0] : '');
 
         $file = $downloadFolder->getFile($filename);
         if ($file == null) {
-            $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-            $response = $requestFactory->request($url);
             if ($response->getStatusCode() === 200) {
-                $mimetype = $response->getHeader('Content-Type')[0];
-                $fileExtensions =  $this->mimeTypeDetector->getFileExtensionsForMimeType($mimetype);
-
-                $file = $downloadFolder->createFile($filename . (('.' . $fileExtensions[0]) ?? ''));
+                $file = $downloadFolder->createFile($filename);
                 $file->setContents($response->getBody()->getContents());
             }
         }
