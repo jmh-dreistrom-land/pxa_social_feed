@@ -8,7 +8,7 @@ CREATE TABLE tx_pxasocialfeed_domain_model_feed
     pid                 int(11)             DEFAULT '0' NOT NULL,
 
     post_date           int(11)             DEFAULT NULL,
-    post_url            varchar(255)        DEFAULT ''  NOT NULL,
+    post_url            varchar(1024)        DEFAULT ''  NOT NULL,
     message             text                            NOT NULL,
     image               text                            NOT NULL,
     small_image               text                      NOT NULL,

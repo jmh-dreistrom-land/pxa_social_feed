@@ -32,8 +32,13 @@ namespace Pixelant\PxaSocialFeed\Domain\Model;
 use League\OAuth2\Client\Provider\Exception\FacebookProviderException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeedFactory;
 use Pixelant\PxaSocialFeed\Feed\Source\FacebookSource;
 use Pixelant\PxaSocialFeed\Provider\Facebook;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -171,6 +176,28 @@ class Token extends AbstractEntity
         $this->accessToken = $accessToken;
     }
 
+    public function isValidAccessToken(): bool
+    {
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+        /** @var AbstractAdditionalFeed $feed */
+        foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+            if ($feed::getTokenTypeId() == $this->getType()) {
+                $feed->setToken($this);
+                return $feed->isTokensValid();
+            }
+        }
+
+        if (!$this->getAccessToken()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function getApiKey(): string
     {
         return $this->apiKey;
@@ -199,6 +226,29 @@ class Token extends AbstractEntity
     public function getFbSocialId(): string
     {
         return $this->fbSocialId;
+    }
+
+    public function getAvailableSocialIds(): array
+    {
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+        /** @var AbstractAdditionalFeed $feed */
+        foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+            if ($feed::getTokenTypeId() == $this->getType()) {
+                $feed->setToken($this);
+
+                try {
+                    return $feed->getAvailableSocialIds();
+                } catch (\Throwable $exception) {
+                    return ['0' => 'Could not fetch data. ' . substr($exception->getMessage(), 0 ,50)];
+                }
+            }
+        }
+
+        return [];
     }
 
     public function setAccessTokenSecret(string $accessTokenSecret): void
@@ -406,12 +456,24 @@ class Token extends AbstractEntity
 
     public static function getAvailableTokensTypes(): array
     {
-        return [
+        $result = [
             static::FACEBOOK,
             static::INSTAGRAM,
             static::TWITTER,
             static::TWITTER_V2,
             static::YOUTUBE,
         ];
+
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+        /** @var AbstractAdditionalFeed $feed */
+        foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+            $result[] = $feed::getTokenTypeId();
+        }
+
+        return $result;
     }
 }

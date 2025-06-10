@@ -14,6 +14,8 @@ use Pixelant\PxaSocialFeed\Domain\Repository\FeedRepository;
 use Pixelant\PxaSocialFeed\Domain\Repository\TokenRepository;
 use Pixelant\PxaSocialFeed\Domain\Validation\Validator\ConfigurationValidator;
 use Pixelant\PxaSocialFeed\Domain\Validation\Validator\TokenValidator;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
 use Pixelant\PxaSocialFeed\Service\Task\ImportFeedsTaskService;
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
@@ -158,6 +160,17 @@ class AdministrationController extends ActionController
     #[Validate(['validator' => TokenValidator::class, 'param' => 'tokenToEdit'])]
     public function updateTokenAction(Token $tokenToEdit): RedirectResponse
     {
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $this->eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+        /** @var AbstractAdditionalFeed $feed */
+        foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+            if ($feed::getTokenTypeId() == $tokenToEdit->getType()) {
+                $feed->setToken($tokenToEdit);
+                $feed->updateToken();
+            }
+        }
+
         $isNew = $tokenToEdit->getUid() === null;
 
         $this->tokenRepository->{$isNew ? 'add' : 'update'}($tokenToEdit);
@@ -423,11 +436,24 @@ class AdministrationController extends ActionController
      */
     protected function isTokensValid($tokens): bool
     {
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $this->eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
         /** @var Token $token */
         foreach ($tokens as $token) {
             if ($token->getType() === Token::INSTAGRAM || $token->getType() === Token::FACEBOOK) {
                 if (!$token->isValidFacebookAccessToken()) {
                     return false;
+                }
+            }
+
+            /** @var AbstractAdditionalFeed $feed */
+            foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+                if ($feed::getTokenTypeId() == $token->getType()) {
+                    $feed->setToken($token);
+                    if (!$feed->isTokensValid()) {
+                        return false;
+                    }
                 }
             }
         }

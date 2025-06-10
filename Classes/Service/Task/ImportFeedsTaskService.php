@@ -8,8 +8,10 @@ use GuzzleHttp\Exception\ClientException;
 use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
 use Pixelant\PxaSocialFeed\Domain\Repository\ConfigurationRepository;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
 use Pixelant\PxaSocialFeed\Exception\FailedExecutingImportException;
 use Pixelant\PxaSocialFeed\Exception\UnsupportedTokenType;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
 use Pixelant\PxaSocialFeed\Feed\FacebookFeedFactory;
 use Pixelant\PxaSocialFeed\Feed\FeedFactoryInterface;
 use Pixelant\PxaSocialFeed\Feed\InstagramFactory;
@@ -20,6 +22,7 @@ use Pixelant\PxaSocialFeed\Service\Expire\FacebookAccessTokenExpireService;
 use Pixelant\PxaSocialFeed\Service\Notification\NotificationService;
 use Pixelant\PxaSocialFeed\Utility\ConfigurationUtility;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -27,6 +30,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 #[Autoconfigure(public: true)]
 class ImportFeedsTaskService
 {
+    const SOON_EXPIRE_AFTER_DAYS = 5;
+
     protected ConfigurationRepository $configurationRepository;
     protected PersistenceManager $persistenceManager;
 
@@ -127,10 +132,67 @@ class ImportFeedsTaskService
                 return GeneralUtility::makeInstance(YoutubeFactory::class);
 
             default:
+                /** @var EventDispatcher $eventDispatcher */
+                $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+                /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+                $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+                /** @var AbstractAdditionalFeed $additionalFeed */
+                foreach ($additionalFeedsEvent->getFeeds() as $additionalFeed) {
+                    if ($additionalFeed->getTokenTypeId() == $token->getType()) {
+                        $additionalFeed->setToken($token);
+                        $this->checkAdditionalFeedAccessTokenExpires($additionalFeed, $token);
+
+                        return $additionalFeed;
+                    }
+                }
+
                 throw new UnsupportedTokenType(
                     "Token type '{$token->getType()}' is not supported",
                     1562837370194
                 );
+        }
+    }
+
+    protected function checkAdditionalFeedAccessTokenExpires(AbstractAdditionalFeed $additionalFactoryObject, Token $token): void
+    {
+        if (!$this->notificationService->canSendEmail()) {
+            return;
+        }
+
+        $expire = $additionalFactoryObject->checkExpire();
+        $ll = 'email.' . $additionalFactoryObject->getTokenTypeId();
+        $mailSubject = LocalizationUtility::translate($ll . '.access_token', 'PxaSocialFeed', [$token->getUid()]);
+
+        if ($expire === true) {
+            // access token has already expired
+            $mailText = LocalizationUtility::translate($ll . '.access_token_expired', 'PxaSocialFeed');
+
+            if ($mailSubject && $mailText) {
+                $this->notificationService->notify($mailSubject, $mailText);
+            }
+        } elseif (is_int($expire)) {
+            // access token expires at some point
+            $daysTillExpire = 0;
+            $expireAt = (new \DateTime())->setTimestamp($expire);
+
+            if ($expireAt->getTimestamp() >= time()) {
+                $today = new \DateTime();
+                $interval = $today->diff($expireAt);
+                $daysTillExpire = (int)$interval->format('%a');
+            }
+
+            if ($daysTillExpire <= static::SOON_EXPIRE_AFTER_DAYS) {
+                $mailText = LocalizationUtility::translate(
+                    $ll . '.access_token_soon_expired',
+                    'PxaSocialFeed',
+                    [$daysTillExpire]
+                );
+
+                if ($mailSubject && $mailText) {
+                    $this->notificationService->notify($mailSubject, $mailText);
+                }
+            }
         }
     }
 
@@ -150,7 +212,7 @@ class ImportFeedsTaskService
                 LocalizationUtility::translate('email.access_token', 'PxaSocialFeed'),
                 LocalizationUtility::translate('email.access_token_expired', 'PxaSocialFeed')
             );
-        } elseif ($expireTokenService->willExpireSoon(5)) {
+        } elseif ($expireTokenService->willExpireSoon(static::SOON_EXPIRE_AFTER_DAYS)) {
             $this->notificationService->notify(
                 LocalizationUtility::translate('email.access_token', 'PxaSocialFeed'),
                 LocalizationUtility::translate(

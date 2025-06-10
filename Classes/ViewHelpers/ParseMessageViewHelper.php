@@ -3,7 +3,11 @@
 namespace Pixelant\PxaSocialFeed\ViewHelpers;
 
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
 use Pixelant\PxaSocialFeed\Exception\UnsupportedTokenType;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -165,6 +169,18 @@ class ParseMessageViewHelper extends AbstractViewHelper
                 );
                 break;
             default:
+                /** @var EventDispatcher $eventDispatcher */
+                $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+                /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+                $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+                /** @var AbstractAdditionalFeed $feed */
+                foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+                    if ($feed::getTokenTypeId() == $type) {
+                        return $feed->parseFeedMessage($text);
+                    }
+                }
+
                 throw new UnsupportedTokenType("Token type $type is not supported by view helper", 1564384491599);
         }
 
