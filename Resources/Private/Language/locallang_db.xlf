@@ -107,6 +107,9 @@
             <trans-unit id="tx_pxasocialfeed_domain_model_tokens.type.type.4">
                 <source>Youtube API</source>
             </trans-unit>
+            <trans-unit id="tx_pxasocialfeed_domain_model_tokens.type.type.5">
+                <source>Facebook Page API</source>
+            </trans-unit>
             <trans-unit id="tx_pxasocialfeed_domain_model_tokens.type.type.6">
                 <source>Twitter v2 API</source>
             </trans-unit>
