@@ -66,7 +66,7 @@ class ConfigurationValidator extends AbstractValidator
             /** @var AbstractAdditionalFeed $feed */
             foreach ($additionalFeedsEvent->getFeeds() as $feed) {
                 if ($configuration->getToken() && $feed::getTokenTypeId() == $configuration->getToken()->getType()) {
-                    $hasValidationError = $feed->isConfigurationValid($configuration);
+                    $hasValidationError = $feed->validateConfiguration($configuration);
                     if ($hasValidationError) {
                         $errorCode = $hasValidationError;
                     }
