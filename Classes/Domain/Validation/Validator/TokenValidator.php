@@ -28,6 +28,10 @@ namespace Pixelant\PxaSocialFeed\Domain\Validation\Validator;
  ***************************************************************/
 
 use Pixelant\PxaSocialFeed\Domain\Model\Token;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 class TokenValidator extends AbstractValidator
@@ -35,7 +39,7 @@ class TokenValidator extends AbstractValidator
     /**
      * Validates tokens
      *
-     * @param Token $configuration
+     * @param Token $token
      */
     protected function isValid(mixed $token): void
     {
@@ -63,6 +67,19 @@ class TokenValidator extends AbstractValidator
             case $token->isYoutubeType():
                 $properties = ['apiKey'];
                 break;
+        }
+
+        /** @var EventDispatcherInterface $eventDispatcher */
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+        /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+        $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+        /** @var AbstractAdditionalFeed $feed */
+        foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+            if ($feed::getTokenTypeId() == $token->getType()) {
+                $feed->setToken($token);
+                $properties = $feed->getRequiredTokenProperties();
+            }
         }
 
         if ($this->isBeGroupRequired()) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pixelant\PxaSocialFeed\Feed;
 
+use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 abstract class AbstractAdditionalFeed implements FeedFactoryInterface
@@ -70,6 +71,28 @@ abstract class AbstractAdditionalFeed implements FeedFactoryInterface
      */
     public function updateToken(): void
     {
+    }
+
+    /**
+     * Called by the token validator.
+     * see: TokenValidator::isValid()
+     *
+     * @return array Returns the required properties of the token. e.g. ['apiKey', 'apiSecretKey']
+     */
+    public function getRequiredTokenProperties(): array
+    {
+        return [];
+    }
+
+    /**
+     * Called by the configuration validator.
+     * see: ConfigurationValidator::isValid()
+     *
+     * @return Returns 0 if configuration is valid otherwise an error code which is used for the error message (validator.error.<errorCode>)
+     */
+    public function validateConfiguration(Configuration $configuration): int
+    {
+        return 0;
     }
 
     /**

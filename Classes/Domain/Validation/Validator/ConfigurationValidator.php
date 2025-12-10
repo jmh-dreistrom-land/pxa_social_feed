@@ -28,6 +28,10 @@ namespace Pixelant\PxaSocialFeed\Domain\Validation\Validator;
  ***************************************************************/
 
 use Pixelant\PxaSocialFeed\Domain\Model\Configuration;
+use Pixelant\PxaSocialFeed\Event\ProvideAdditionalFeedEvent;
+use Pixelant\PxaSocialFeed\Feed\AbstractAdditionalFeed;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ConfigurationValidator extends AbstractValidator
 {
@@ -53,6 +57,21 @@ class ConfigurationValidator extends AbstractValidator
             $errorCode = 1491570246;
         } elseif ($this->isBeGroupRequired() && $this->isEmptyValue($configuration->getBeGroup())) {
             $errorCode = 1578488026895;
+        } else {
+            /** @var EventDispatcherInterface $eventDispatcher */
+            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+            /** @var ProvideAdditionalFeedEvent $additionalFeedsEvent */
+            $additionalFeedsEvent = $eventDispatcher->dispatch(new ProvideAdditionalFeedEvent());
+
+            /** @var AbstractAdditionalFeed $feed */
+            foreach ($additionalFeedsEvent->getFeeds() as $feed) {
+                if ($configuration->getToken() && $feed::getTokenTypeId() == $configuration->getToken()->getType()) {
+                    $hasValidationError = $feed->isConfigurationValid($configuration);
+                    if ($hasValidationError) {
+                        $errorCode = $hasValidationError;
+                    }
+                }
+            }
         }
 
         if (isset($errorCode)) {
